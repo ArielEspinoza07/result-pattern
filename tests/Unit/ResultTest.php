@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 use ArielEspinoza07\ResultPattern\Ok;
+use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 
 test('ok result', function () {
     $message = 'Operation successful';
     $data = ['key' => 'value'];
 
-    $result = Ok::fromMessageAndData($message, $data);
+    $result = Ok::fromMessageAndData($message, HttpResponseStatusCode::OK, $data);
 
     expect($result)
         ->toBeSuccessResult()
@@ -33,13 +34,13 @@ test('ok result to array', function () {
     $message = 'Operation successful';
     $data = ['key' => 'value'];
 
-    $result = Ok::fromMessageAndData($message, $data);
+    $result = Ok::fromMessageAndData($message, HttpResponseStatusCode::OK, $data);
     $array = $result->toArray();
 
     expect($array)
         ->toBeArray()
-        ->toHaveKeys(['isSuccess', 'message', 'status', 'data'])
-        ->and($array['isSuccess'])->toBeTrue()
+        ->toHaveKeys(['success', 'message', 'status', 'data'])
+        ->and($array['success'])->toBeTrue()
         ->and($array['message'])->toBe($message)
         ->and($array['status'])->toBe(200)
         ->and($array['data'])->toBe($data);

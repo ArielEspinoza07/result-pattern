@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-use ArielEspinoza07\ResultPattern\NotFound;
+use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
+use ArielEspinoza07\ResultPattern\Failed;
 
 test('failed result', function () {
     $message = 'Resource not found';
     $data = ['resource' => 'user', 'id' => 1];
 
-    $result = NotFound::fromMessageAndData($message, $data);
+    $result = Failed::fromMessageAndData($message, HttpResponseStatusCode::NotFound, $data);
 
     expect($result)
         ->toBeErrorResult()
@@ -20,7 +21,7 @@ test('failed result', function () {
 test('failed result with message only', function () {
     $message = 'Resource not found';
 
-    $result = NotFound::from($message);
+    $result = Failed::from($message, HttpResponseStatusCode::NotFound);
 
     expect($result)
         ->toBeErrorResult()
@@ -33,13 +34,13 @@ test('failed result to array', function () {
     $message = 'Resource not found';
     $data = ['resource' => 'user', 'id' => 1];
 
-    $result = NotFound::fromMessageAndData($message, $data);
+    $result = Failed::fromMessageAndData($message, HttpResponseStatusCode::NotFound, $data);
     $array = $result->toArray();
 
     expect($array)
         ->toBeArray()
-        ->toHaveKeys(['isSuccess', 'message', 'status', 'data'])
-        ->and($array['isSuccess'])->toBeFalse()
+        ->toHaveKeys(['success', 'message', 'status', 'data'])
+        ->and($array['success'])->toBeFalse()
         ->and($array['message'])->toBe($message)
         ->and($array['status'])->toBe(404)
         ->and($array['data'])->toBe($data);

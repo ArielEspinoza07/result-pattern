@@ -22,7 +22,7 @@ final readonly class Ok extends Result implements CreateFromMessageAndDataContra
     ): Result {
         if ($status instanceof HttpResponseStatusCode) {
             return self::create(
-                isSuccess: false,
+                isSuccess: true,
                 message: $message ?? $status->message(),
                 status: $status->value,
                 data: $data,
@@ -30,7 +30,7 @@ final readonly class Ok extends Result implements CreateFromMessageAndDataContra
         }
 
         return self::create(
-            isSuccess: false,
+            isSuccess: true,
             message: $message ?? HttpResponseStatusCode::OK->message(),
             status: $status ?? HttpResponseStatusCode::OK->value,
             data: $data,

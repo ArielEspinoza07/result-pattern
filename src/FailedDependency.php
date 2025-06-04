@@ -10,20 +10,18 @@ use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 use ArielEspinoza07\ResultPattern\Traits\CreateFromMessage;
 use ArielEspinoza07\ResultPattern\Traits\CreateFromMessageAndData;
 
-final readonly class Ok extends Result implements CreateFromMessageAndDataContract, CreateFromMessageContract
+final readonly class FailedDependency extends Result implements CreateFromMessageAndDataContract, CreateFromMessageContract
 {
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
     public static function from(string|null $message = null, array $data = []): Result
     {
-        $httpResponseStatus = HttpResponseStatusCode::OK;
-
         return self::create(
-            isSuccess: false,
-            message: $message ?? $httpResponseStatus->message(),
-            status: $httpResponseStatus->value,
-            data: $data,
+            false,
+            $message ?? HttpResponseStatusCode::FailedDependency->message(),
+            HttpResponseStatusCode::FailedDependency->value,
+            $data
         );
     }
 }

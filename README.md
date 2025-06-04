@@ -4,11 +4,13 @@ A modern PHP 8.3+ implementation of the Result pattern for handling operation ou
 
 ## Features
 
-- 🛡️ Type-safe result handling
-- 🌐 HTTP response status codes support
+- 🛡️ Type-safe result handling with strict type hints
+- 🌐 Complete HTTP response status codes support (1xx to 5xx)
 - 🔒 Immutable objects using PHP 8.3+ readonly classes
 - 🎯 SOLID principles adherence
 - 🧩 Composable and extensible design
+- 🔍 100% type coverage with PHPStan level max
+- 📝 Comprehensive test suite with Pest PHP
 
 ## Installation
 
@@ -25,13 +27,24 @@ use ArielEspinoza07\ResultPattern\NotFound;
 // Success case
 $result = Ok::from("Operation successful", ["id" => 1]);
 if ($result->isSuccess()) {
-    $data = $result->data();
+    $data = $result->data(); // array<string, mixed>
 }
 
 // Error case
 $result = NotFound::from("Resource not found");
 echo $result->message(); // "Resource not found"
 echo $result->status(); // 404
+
+// Convert to array
+$array = $result->toArray();
+/*
+[
+    'success' => false,
+    'message' => 'Resource not found',
+    'status' => 404,
+    'data' => []
+]
+*/
 ```
 
 ## Available Result Types
@@ -107,6 +120,38 @@ echo $result->status(); // 404
 - `LoopDetected` (508)
 - `NotExtended` (510)
 - `NetworkAuthenticationRequired` (511)
+
+## Development
+
+### Requirements
+
+- PHP 8.3+
+- Composer 2.0+
+
+### Quality Tools
+
+This package uses several tools to ensure code quality:
+
+```bash
+# Run all checks
+composer test
+
+# Run specific checks
+composer test:lint     # Check code style
+composer test:types    # Run static analysis
+composer test:unit     # Run unit tests
+composer test:coverage # Check test coverage
+```
+
+### Continuous Integration
+
+GitHub Actions automatically run the following checks on push and pull requests:
+
+- Static analysis with PHPStan (level max)
+- Unit tests with Pest PHP
+- Code style with Laravel Pint
+- Type coverage check
+- Typo check with Peck
 
 ## Development
 

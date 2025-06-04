@@ -52,13 +52,16 @@ echo $result->status(); // 404
 - `Conflict` (409)
 - `Gone` (410)
 - `PayloadTooLarge` (413)
+- `UnsupportedMediaType` (415)
 - `UnprocessableEntity` (422)
 - `TooManyRequests` (429)
 
 ### Server Error Responses (5xx)
 - `InternalServerError` (500)
+- `NotImplemented` (501)
 - `BadGateway` (502)
 - `ServiceUnavailable` (503)
+- `GatewayTimeout` (504)
 
 ## Development
 
@@ -85,12 +88,22 @@ This package includes several development tools to ensure code quality and maint
 
 ### Testing
 
-- **PHPUnit**: Unit testing framework
+- **Pest PHP**: Modern Testing Framework
   ```bash
-  composer test        # Run tests
+  composer test           # Run tests
+  composer test:coverage  # Run tests with coverage report
   ```
 
-- **Peck PHP**: Additional testing utilities
+Custom expectations are available for Result objects:
+```php
+expect($result)
+    ->toBeSuccessResult()
+    ->and($result->status())->toBe(200);
+
+expect($result)
+    ->toBeErrorResult()
+    ->and($result->status())->toBe(404);
+```
 
 ## License
 

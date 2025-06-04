@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace ArielEspinoza07\ResultPattern;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 abstract readonly class Result
 {
     private function __construct(
@@ -20,7 +23,7 @@ abstract readonly class Result
         string $message,
         int $status,
         array $data,
-    ): Result {
+    ): static {
         return new static($isSuccess, $message, $status, $data);
     }
 

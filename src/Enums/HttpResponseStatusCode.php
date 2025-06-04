@@ -164,6 +164,14 @@ enum HttpResponseStatusCode: int
     public function description(): string
     {
         return match($this) {
+            // Default case for informational, success, and redirection responses
+            self::Continue, self::SwitchingProtocols, self::Processing, self::EarlyHints,
+            self::OK, self::Created, self::Accepted, self::NonAuthoritativeInformation,
+            self::NoContent, self::ResetContent, self::PartialContent, self::MultiStatus,
+            self::AlreadyReported, self::IMUsed,
+            self::MultipleChoices, self::MovedPermanently, self::Found, self::SeeOther,
+            self::NotModified, self::UseProxy, self::TemporaryRedirect,
+            self::PermanentRedirect => $this->message(),
             self::BadRequest => 'The server cannot process the request due to a client error.',
             self::Unauthorized => 'Authentication is required and has failed or has not been provided.',
             self::PaymentRequired => 'Payment is required before the resource can be accessed.',

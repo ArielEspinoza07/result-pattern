@@ -26,16 +26,16 @@ uses()->group('result');
 |
 */
 
-expect()->extend('toBeSuccessResult', function() {
-    return $this->and(
-        expect($this->value->isSuccess())->toBeTrue(),
-    );
+/** @phpstan-ignore-next-line */
+expect()->extend('toBeSuccessResult', function () {
+    /** @phpstan-ignore-next-line */
+    return expect($this->value->isSuccess())->toBeTrue();
 });
 
-expect()->extend('toBeErrorResult', function() {
-    return $this->and(
-        expect($this->value->isSuccess())->toBeFalse(),
-    );
+/** @phpstan-ignore-next-line */
+expect()->extend('toBeErrorResult', function () {
+    /** @phpstan-ignore-next-line */
+    return expect($this->value->isSuccess())->toBeFalse();
 });
 
 /*

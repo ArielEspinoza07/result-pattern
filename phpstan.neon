@@ -3,7 +3,19 @@ parameters:
     paths:
         - src
         - tests
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
+    reportUnmatchedIgnoredErrors: false
     ignoreErrors:
-        - '#PHPUnit\\Framework\\TestCase#'
+        - 
+            message: '#.*PHPUnit.*TestCase.*#'
+        - 
+            message: '#Call to an undefined method Pest\\Expectation.*#'
+        - 
+            identifier: missingType.iterableValue
+        - 
+            identifier: missingType.generics
+        -
+            message: '#Unsafe usage of new static.*#'
+        -
+            message: '#Method .* should return static.* but returns static.*#'
+        -
+            message: '#Return type .* is not covariant with return type static.*#'

@@ -48,13 +48,16 @@ echo $result->status(); // 404
 - `Forbidden` (403)
 - `NotFound` (404)
 - `MethodNotAllowed` (405)
+- `NotAcceptable` (406)
 - `Conflict` (409)
 - `Gone` (410)
+- `PayloadTooLarge` (413)
 - `UnprocessableEntity` (422)
 - `TooManyRequests` (429)
 
 ### Server Error Responses (5xx)
 - `InternalServerError` (500)
+- `BadGateway` (502)
 - `ServiceUnavailable` (503)
 
 ## Development

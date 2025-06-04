@@ -1,1 +1,16 @@
+# IDE & Editors
 /.idea
+/.vscode
+
+# Dependencies
+/vendor
+/composer.lock
+
+# Cache & Logs
+/.phpunit.cache
+/.php-cs-fixer.cache
+/.phpunit.result.cache
+
+# Build artifacts
+/build
+/coverage

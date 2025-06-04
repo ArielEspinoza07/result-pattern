@@ -13,8 +13,7 @@ trait CreateFromMessageAndData
         string $message,
         HttpResponseStatusCode|int $status,
         array $data,
-    ): Result
-    {
+    ): Result {
         return self::from(
             message: $message,
             status: $status,

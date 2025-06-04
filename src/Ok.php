@@ -19,8 +19,7 @@ final readonly class Ok extends Result implements CreateFromMessageAndDataContra
         ?string $message = null,
         HttpResponseStatusCode|int|null $status = null,
         ?array $data = [],
-    ): Result
-    {
+    ): Result {
         if ($status instanceof HttpResponseStatusCode) {
             return self::create(
                 isSuccess: false,

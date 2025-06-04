@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ArielEspinoza07\ResultPattern;
 
 use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 use ArielEspinoza07\ResultPattern\Traits\CreateFromMessage;
 use ArielEspinoza07\ResultPattern\Traits\CreateFromMessageAndData;
 
-final readonly class Failed extends Result implements Contracts\CreateFromMessageContract, Contracts\CreateFromMessageAndDataContract
+final readonly class Failed extends Result implements Contracts\CreateFromMessageAndDataContract, Contracts\CreateFromMessageContract
 {
     use CreateFromMessage;
     use CreateFromMessageAndData;

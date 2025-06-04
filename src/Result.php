@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ArielEspinoza07\ResultPattern;
 
+use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
+
 /**
  * @phpstan-consistent-constructor
  */
@@ -21,7 +23,11 @@ abstract readonly class Result
     /**
      * @param array<string, mixed> $data
      */
-    abstract public static function from(?string $message = null, array $data = []): self;
+    abstract public static function from(
+        ?string $message = null,
+        HttpResponseStatusCode|int|null $status = null,
+        ?array $data = []
+    ): self;
 
     /**
      * @param array<string, mixed> $data

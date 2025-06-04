@@ -27,13 +27,13 @@ uses()->group('result');
 */
 
 /** @phpstan-ignore-next-line */
-expect()->extend('toBeSuccessResult', function() {
+expect()->extend('toBeSuccessResult', function () {
     /** @phpstan-ignore-next-line */
     return expect($this->value->isSuccess())->toBeTrue();
 });
 
 /** @phpstan-ignore-next-line */
-expect()->extend('toBeErrorResult', function() {
+expect()->extend('toBeErrorResult', function () {
     /** @phpstan-ignore-next-line */
     return expect($this->value->isSuccess())->toBeFalse();
 });

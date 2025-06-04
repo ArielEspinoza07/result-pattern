@@ -11,7 +11,7 @@ use ArielEspinoza07\ResultPattern\SeeOther;
 use ArielEspinoza07\ResultPattern\TemporaryRedirect;
 use ArielEspinoza07\ResultPattern\UseProxy;
 
-test('multiple choices result', function() {
+test('multiple choices result', function () {
     $data = ['choices' => ['/path1', '/path2']];
     $result = MultipleChoices::fromMessageAndData('Multiple choices available', $data);
 
@@ -22,7 +22,7 @@ test('multiple choices result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('moved permanently result', function() {
+test('moved permanently result', function () {
     $data = ['location' => '/new-path'];
     $result = MovedPermanently::fromMessageAndData('Resource moved permanently', $data);
 
@@ -33,7 +33,7 @@ test('moved permanently result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('found result', function() {
+test('found result', function () {
     $data = ['location' => '/temp-path'];
     $result = Found::fromMessageAndData('Resource found at temporary location', $data);
 
@@ -44,7 +44,7 @@ test('found result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('see other result', function() {
+test('see other result', function () {
     $data = ['location' => '/other-resource'];
     $result = SeeOther::fromMessageAndData('See other resource', $data);
 
@@ -55,7 +55,7 @@ test('see other result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('not modified result', function() {
+test('not modified result', function () {
     $result = NotModified::from('Resource not modified');
 
     expect($result)
@@ -64,7 +64,7 @@ test('not modified result', function() {
         ->and($result->status())->toBe(304);
 });
 
-test('use proxy result', function() {
+test('use proxy result', function () {
     $data = ['proxy' => 'http://proxy.example.com'];
     $result = UseProxy::fromMessageAndData('Use proxy for this request', $data);
 
@@ -75,7 +75,7 @@ test('use proxy result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('temporary redirect result', function() {
+test('temporary redirect result', function () {
     $data = ['location' => '/temp-redirect'];
     $result = TemporaryRedirect::fromMessageAndData('Temporary redirect', $data);
 
@@ -86,7 +86,7 @@ test('temporary redirect result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('permanent redirect result', function() {
+test('permanent redirect result', function () {
     $data = ['location' => '/permanent-redirect'];
     $result = PermanentRedirect::fromMessageAndData('Permanent redirect', $data);
 

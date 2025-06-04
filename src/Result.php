@@ -15,17 +15,18 @@ abstract readonly class Result
         private int $status,
         /** @var array<string, mixed> */
         private array $data,
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $data
      */
-    abstract public static function from(?string $message = null, array $data = []): Result;
+    abstract public static function from(?string $message = null, array $data = []): self;
 
     /**
      * @param array<string, mixed> $data
      */
-    public static function create(
+    final public static function create(
         bool $isSuccess,
         string $message,
         int $status,
@@ -34,17 +35,17 @@ abstract readonly class Result
         return new static($isSuccess, $message, $status, $data);
     }
 
-    public function isSuccess(): bool
+    final public function isSuccess(): bool
     {
         return $this->isSuccess;
     }
 
-    public function message(): string
+    final public function message(): string
     {
         return $this->message;
     }
 
-    public function status(): int
+    final public function status(): int
     {
         return $this->status;
     }
@@ -52,7 +53,7 @@ abstract readonly class Result
     /**
      * @return array<string, mixed>
      */
-    public function data(): array
+    final public function data(): array
     {
         return $this->data;
     }
@@ -60,7 +61,7 @@ abstract readonly class Result
     /**
      * @return array{success: bool, message: string, status: int, data: array<string, mixed>}
      */
-    public function toArray(): array
+    final public function toArray(): array
     {
         return [
             'success' => $this->isSuccess(),

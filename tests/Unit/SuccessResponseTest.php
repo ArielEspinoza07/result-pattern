@@ -9,7 +9,7 @@ use ArielEspinoza07\ResultPattern\NonAuthoritativeInformation;
 use ArielEspinoza07\ResultPattern\PartialContent;
 use ArielEspinoza07\ResultPattern\ResetContent;
 
-test('non authoritative information result', function() {
+test('non authoritative information result', function () {
     $result = NonAuthoritativeInformation::from('Info from cache');
 
     expect($result)
@@ -18,7 +18,7 @@ test('non authoritative information result', function() {
         ->and($result->status())->toBe(203);
 });
 
-test('reset content result', function() {
+test('reset content result', function () {
     $result = ResetContent::from('Form reset successful');
 
     expect($result)
@@ -27,7 +27,7 @@ test('reset content result', function() {
         ->and($result->status())->toBe(205);
 });
 
-test('partial content result', function() {
+test('partial content result', function () {
     $data = ['range' => 'bytes=0-1023'];
     $result = PartialContent::fromMessageAndData('Partial content delivered', $data);
 
@@ -38,7 +38,7 @@ test('partial content result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('multi status result', function() {
+test('multi status result', function () {
     $data = ['statuses' => [200, 404]];
     $result = MultiStatus::fromMessageAndData('Multiple status results', $data);
 
@@ -49,7 +49,7 @@ test('multi status result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('already reported result', function() {
+test('already reported result', function () {
     $result = AlreadyReported::from('Resource already reported');
 
     expect($result)
@@ -58,7 +58,7 @@ test('already reported result', function() {
         ->and($result->status())->toBe(208);
 });
 
-test('im used result', function() {
+test('im used result', function () {
     $result = ImUsed::from('IM used');
 
     expect($result)

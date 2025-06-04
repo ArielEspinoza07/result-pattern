@@ -9,7 +9,7 @@ use ArielEspinoza07\ResultPattern\NetworkAuthenticationRequired;
 use ArielEspinoza07\ResultPattern\NotExtended;
 use ArielEspinoza07\ResultPattern\VariantAlsoNegotiates;
 
-test('http version not supported result', function() {
+test('http version not supported result', function () {
     $data = ['version' => 'HTTP/3.0'];
     $result = HttpVersionNotSupported::fromMessageAndData('HTTP version not supported', $data);
 
@@ -20,7 +20,7 @@ test('http version not supported result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('variant also negotiates result', function() {
+test('variant also negotiates result', function () {
     $result = VariantAlsoNegotiates::from('Variant also negotiates');
 
     expect($result)
@@ -29,7 +29,7 @@ test('variant also negotiates result', function() {
         ->and($result->status())->toBe(506);
 });
 
-test('insufficient storage result', function() {
+test('insufficient storage result', function () {
     $data = ['available' => '100MB'];
     $result = InsufficientStorage::fromMessageAndData('Insufficient storage', $data);
 
@@ -40,7 +40,7 @@ test('insufficient storage result', function() {
         ->and($result->data())->toBe($data);
 });
 
-test('loop detected result', function() {
+test('loop detected result', function () {
     $result = LoopDetected::from('Infinite loop detected');
 
     expect($result)
@@ -49,7 +49,7 @@ test('loop detected result', function() {
         ->and($result->status())->toBe(508);
 });
 
-test('not extended result', function() {
+test('not extended result', function () {
     $result = NotExtended::from('Not extended');
 
     expect($result)
@@ -58,7 +58,7 @@ test('not extended result', function() {
         ->and($result->status())->toBe(510);
 });
 
-test('network authentication required result', function() {
+test('network authentication required result', function () {
     $data = ['auth_url' => 'https://auth.example.com'];
     $result = NetworkAuthenticationRequired::fromMessageAndData('Network authentication required', $data);
 

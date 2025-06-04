@@ -110,33 +110,61 @@ echo $result->status(); // 404
 
 ## Development
 
-This package includes several development tools to ensure code quality and maintainability:
+### Requirements
+- PHP 8.3 or higher
+- Composer 2.0 or higher
+
+### Installation
+```bash
+composer require windsurf/result-pattern
+```
+
+### Development Installation
+```bash
+git clone https://github.com/windsurf/result-pattern.git
+cd result-pattern
+composer install
+```
+
+### Testing
+This package uses Pest PHP for testing. To run the tests:
+
+```bash
+composer test
+```
+
+To generate a coverage report:
+```bash
+composer test:coverage
+```
+
+The coverage report will be available in the `coverage` directory.
+
+### Development Tools
+This package uses several development tools: to ensure code quality and maintainability:
 
 ### Code Quality Tools
 
-- **Rector**: PHP code modernizer and refactoring tool
-  ```bash
-  composer rector:check  # Check for possible changes
-  composer rector:fix   # Apply changes
-  ```
-
-- **Laravel Pint**: PHP code style fixer following PSR-12
-  ```bash
-  composer pint        # Fix code style
-  composer pint:test   # Check code style
-  ```
-
-- **PHPStan**: Static analysis tool
-  ```bash
-  composer analyse     # Run static analysis
-  ```
-
-### Testing
-
-- **Pest PHP**: Modern Testing Framework
+- **Pest PHP**: Modern Testing Framework with custom expectations
   ```bash
   composer test           # Run tests
   composer test:coverage  # Run tests with coverage report
+  ```
+
+- **Laravel Pint**: PSR-12 Code Style Fixer
+  ```bash
+  composer pint      # Fix code style
+  composer pint:test # Check code style
+  ```
+
+- **PHPStan**: Static Analysis (Level 9)
+  ```bash
+  composer analyse   # Run static analysis
+  ```
+
+- **Rector**: PHP 8.3 Compatibility and Code Quality
+  ```bash
+  composer rector    # Run code quality checks
   ```
 
 Custom expectations are available for Result objects:

@@ -30,12 +30,27 @@
         }
     },
     "scripts": {
-        "test": "pest",
-        "test:coverage": "pest --coverage",
+        "lint": [
+            "rector",
+            "pint"
+        ],
+        "test:type-coverage": "pest --type-coverage --min=100",
+        "test:typos": "peck",
+        "test:lint": [
+            "pint --test"
+        ],
+        "test:unit": "pest --parallel --coverage --min=90",
+        "test:types": "phpstan",
+        "test": [
+            "@test:lint",
+            "@test:type-coverage",
+            "@test:typos",
+            "@test:unit",
+            "@test:types",
+            "@rector:check"
+        ],
         "analyse": "phpstan analyse",
-        "cs-fix": "php-cs-fixer fix",
         "pint": "pint",
-        "pint:test": "pint --test",
         "rector:check": "rector process --dry-run",
         "rector:fix": "rector process"
     },

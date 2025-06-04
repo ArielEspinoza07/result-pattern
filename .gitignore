@@ -1,6 +1,8 @@
 # IDE & Editors
 /.idea
 /.vscode
+.DS_Store
+Thumbs.db
 
 # Dependencies
 /vendor
@@ -12,7 +14,11 @@
 /.phpunit.result.cache
 /.pest
 /.pint.cache
+*.log
+*.cache
 
 # Build artifacts
 /build
 /coverage
+/dist
+*.phar

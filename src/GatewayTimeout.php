@@ -15,13 +15,13 @@ final readonly class GatewayTimeout extends Result implements CreateFromMessageA
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::GatewayTimeout->message(),
             HttpResponseStatusCode::GatewayTimeout->value,
-            $data
+            $data,
         );
     }
 }

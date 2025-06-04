@@ -15,13 +15,13 @@ final readonly class PaymentRequired extends Result implements CreateFromMessage
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::PaymentRequired->message(),
             HttpResponseStatusCode::PaymentRequired->value,
-            $data
+            $data,
         );
     }
 }

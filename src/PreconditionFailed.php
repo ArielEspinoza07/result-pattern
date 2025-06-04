@@ -15,13 +15,13 @@ final readonly class PreconditionFailed extends Result implements CreateFromMess
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::PreconditionFailed->message(),
             HttpResponseStatusCode::PreconditionFailed->value,
-            $data
+            $data,
         );
     }
 }

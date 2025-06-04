@@ -12,13 +12,13 @@ final readonly class LoopDetected extends Result implements CreateFromMessageCon
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::LoopDetected->message(),
             HttpResponseStatusCode::LoopDetected->value,
-            $data
+            $data,
         );
     }
 }

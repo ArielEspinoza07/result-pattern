@@ -6,7 +6,7 @@ namespace ArielEspinoza07\ResultPattern\Enums;
 
 enum HttpResponseStatusCode: int
 {
-// 1xx Informational
+    // 1xx Informational
     case Continue = 100;
     case SwitchingProtocols = 101;
     case Processing = 102;

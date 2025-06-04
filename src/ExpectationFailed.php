@@ -12,13 +12,13 @@ final readonly class ExpectationFailed extends Result implements CreateFromMessa
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::ExpectationFailed->message(),
             HttpResponseStatusCode::ExpectationFailed->value,
-            $data
+            $data,
         );
     }
 }

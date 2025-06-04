@@ -12,13 +12,13 @@ final readonly class VariantAlsoNegotiates extends Result implements CreateFromM
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::VariantAlsoNegotiates->message(),
             HttpResponseStatusCode::VariantAlsoNegotiates->value,
-            $data
+            $data,
         );
     }
 }

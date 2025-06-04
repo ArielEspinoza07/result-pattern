@@ -12,13 +12,13 @@ final readonly class ImATeapot extends Result implements CreateFromMessageContra
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::ImATeapot->message(),
             HttpResponseStatusCode::ImATeapot->value,
-            $data
+            $data,
         );
     }
 }

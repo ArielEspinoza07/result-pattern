@@ -12,13 +12,13 @@ final readonly class TooEarly extends Result implements CreateFromMessageContrac
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::TooEarly->message(),
             HttpResponseStatusCode::TooEarly->value,
-            $data
+            $data,
         );
     }
 }

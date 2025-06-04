@@ -15,13 +15,13 @@ final readonly class Accepted extends Result implements CreateFromMessageAndData
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             true,
             $message ?? HttpResponseStatusCode::Accepted->message(),
             HttpResponseStatusCode::Accepted->value,
-            $data
+            $data,
         );
     }
 }

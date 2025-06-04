@@ -10,18 +10,18 @@ use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 use ArielEspinoza07\ResultPattern\Traits\CreateFromMessage;
 use ArielEspinoza07\ResultPattern\Traits\CreateFromMessageAndData;
 
-final readonly class HttpVersionNotSupported extends Result implements CreateFromMessageContract, CreateFromMessageAndDataContract
+final readonly class HttpVersionNotSupported extends Result implements CreateFromMessageAndDataContract, CreateFromMessageContract
 {
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::HttpVersionNotSupported->message(),
             HttpResponseStatusCode::HttpVersionNotSupported->value,
-            $data
+            $data,
         );
     }
 }

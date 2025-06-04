@@ -15,13 +15,13 @@ final readonly class MethodNotAllowed extends Result implements CreateFromMessag
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::MethodNotAllowed->message(),
             HttpResponseStatusCode::MethodNotAllowed->value,
-            $data
+            $data,
         );
     }
 }

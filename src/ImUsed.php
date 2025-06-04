@@ -15,13 +15,13 @@ final readonly class ImUsed extends Result implements CreateFromMessageAndDataCo
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             true,
             $message ?? HttpResponseStatusCode::IMUsed->message(),
             HttpResponseStatusCode::IMUsed->value,
-            $data
+            $data,
         );
     }
 }

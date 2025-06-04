@@ -15,13 +15,13 @@ final readonly class NonAuthoritativeInformation extends Result implements Creat
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             true,
             $message ?? HttpResponseStatusCode::NonAuthoritativeInformation->message(),
             HttpResponseStatusCode::NonAuthoritativeInformation->value,
-            $data
+            $data,
         );
     }
 }

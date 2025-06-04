@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -24,15 +26,15 @@ uses()->group('result');
 |
 */
 
-expect()->extend('toBeSuccessResult', function () {
+expect()->extend('toBeSuccessResult', function() {
     return $this->and(
-        expect($this->value->isSuccess())->toBeTrue()
+        expect($this->value->isSuccess())->toBeTrue(),
     );
 });
 
-expect()->extend('toBeErrorResult', function () {
+expect()->extend('toBeErrorResult', function() {
     return $this->and(
-        expect($this->value->isSuccess())->toBeFalse()
+        expect($this->value->isSuccess())->toBeFalse(),
     );
 });
 

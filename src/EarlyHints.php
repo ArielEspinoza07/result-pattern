@@ -12,13 +12,13 @@ final readonly class EarlyHints extends Result implements CreateFromMessageContr
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             true,
             $message ?? HttpResponseStatusCode::EarlyHints->message(),
             HttpResponseStatusCode::EarlyHints->value,
-            $data
+            $data,
         );
     }
 }

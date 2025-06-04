@@ -15,13 +15,13 @@ final readonly class PartialContent extends Result implements CreateFromMessageA
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             true,
             $message ?? HttpResponseStatusCode::PartialContent->message(),
             HttpResponseStatusCode::PartialContent->value,
-            $data
+            $data,
         );
     }
 }

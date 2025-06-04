@@ -15,13 +15,13 @@ final readonly class ResetContent extends Result implements CreateFromMessageAnd
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             true,
             $message ?? HttpResponseStatusCode::ResetContent->message(),
             HttpResponseStatusCode::ResetContent->value,
-            $data
+            $data,
         );
     }
 }

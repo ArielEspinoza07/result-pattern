@@ -12,13 +12,13 @@ final readonly class PreconditionRequired extends Result implements CreateFromMe
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::PreconditionRequired->message(),
             HttpResponseStatusCode::PreconditionRequired->value,
-            $data
+            $data,
         );
     }
 }

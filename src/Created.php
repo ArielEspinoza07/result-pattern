@@ -14,7 +14,7 @@ final readonly class Created extends Result implements CreateFromMessageAndDataC
     use CreateFromMessage;
     use CreateFromMessageAndData;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         $httpResponseStatus = HttpResponseStatusCode::Created;
 

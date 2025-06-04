@@ -12,13 +12,13 @@ final readonly class MisdirectedRequest extends Result implements CreateFromMess
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::MisdirectedRequest->message(),
             HttpResponseStatusCode::MisdirectedRequest->value,
-            $data
+            $data,
         );
     }
 }

@@ -12,13 +12,13 @@ final readonly class ProxyAuthenticationRequired extends Result implements Creat
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::ProxyAuthenticationRequired->message(),
             HttpResponseStatusCode::ProxyAuthenticationRequired->value,
-            $data
+            $data,
         );
     }
 }

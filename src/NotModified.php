@@ -12,13 +12,13 @@ final readonly class NotModified extends Result implements CreateFromMessageCont
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             true,
             $message ?? HttpResponseStatusCode::NotModified->message(),
             HttpResponseStatusCode::NotModified->value,
-            $data
+            $data,
         );
     }
 }

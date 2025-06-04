@@ -12,13 +12,13 @@ final readonly class Processing extends Result implements CreateFromMessageContr
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             true,
             $message ?? HttpResponseStatusCode::Processing->message(),
             HttpResponseStatusCode::Processing->value,
-            $data
+            $data,
         );
     }
 }

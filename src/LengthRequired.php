@@ -12,13 +12,13 @@ final readonly class LengthRequired extends Result implements CreateFromMessageC
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::LengthRequired->message(),
             HttpResponseStatusCode::LengthRequired->value,
-            $data
+            $data,
         );
     }
 }

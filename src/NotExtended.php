@@ -12,13 +12,13 @@ final readonly class NotExtended extends Result implements CreateFromMessageCont
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         return self::create(
             false,
             $message ?? HttpResponseStatusCode::NotExtended->message(),
             HttpResponseStatusCode::NotExtended->value,
-            $data
+            $data,
         );
     }
 }

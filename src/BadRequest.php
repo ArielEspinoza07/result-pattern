@@ -11,7 +11,7 @@ final readonly class BadRequest extends Result implements CreateFromMessageContr
 {
     use CreateFromMessage;
 
-    public static function from(string|null $message = null, array $data = []): Result
+    public static function from(?string $message = null, array $data = []): Result
     {
         $httpResponseStatus = HttpResponseStatusCode::BadRequest;
 

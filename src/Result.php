@@ -13,7 +13,7 @@ abstract readonly class Result
         private array $data,
     ) {}
 
-    abstract public static function from(string|null $message = null, array $data = []): Result;
+    abstract public static function from(?string $message = null, array $data = []): Result;
 
     public static function create(
         bool $isSuccess,

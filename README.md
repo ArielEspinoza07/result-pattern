@@ -53,7 +53,11 @@ echo $result->status(); // 404
 - `Gone` (410)
 - `PayloadTooLarge` (413)
 - `UnsupportedMediaType` (415)
+- `PreconditionFailed` (412)
+- `RequestTimeout` (408)
 - `UnprocessableEntity` (422)
+- `Locked` (423)
+- `FailedDependency` (424)
 - `TooManyRequests` (429)
 
 ### Server Error Responses (5xx)

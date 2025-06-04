@@ -10,6 +10,8 @@
 /.phpunit.cache
 /.php-cs-fixer.cache
 /.phpunit.result.cache
+/.pest
+/.pint.cache
 
 # Build artifacts
 /build

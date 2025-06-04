@@ -1,5 +1,5 @@
 {
-    "name": "ArielEspinoza07/result-pattern",
+    "name": "arielespinoza07/result-pattern",
     "description": "A modern PHP 8.3+ implementation of the Result pattern for handling operation outcomes and HTTP responses",
     "type": "library",
     "license": "MIT",
@@ -15,11 +15,14 @@
     "require-dev": {
         "phpunit/phpunit": "^10.0",
         "phpstan/phpstan": "^1.10",
-        "friendsofphp/php-cs-fixer": "^3.0"
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "rector/rector": "^0.18",
+        "laravel/pint": "^1.13",
+        "peckphp/peck": "^1.0"
     },
     "autoload": {
         "psr-4": {
-            "Windsurf\\ResultPattern\\": "src/"
+            "ArielEspinoza07\\ResultPattern\\": "src/"
         }
     },
     "autoload-dev": {
@@ -30,7 +33,11 @@
     "scripts": {
         "test": "phpunit",
         "analyse": "phpstan analyse",
-        "cs-fix": "php-cs-fixer fix"
+        "cs-fix": "php-cs-fixer fix",
+        "pint": "pint",
+        "pint:test": "pint --test",
+        "rector:check": "rector process --dry-run",
+        "rector:fix": "rector process"
     },
     "minimum-stability": "stable"
 }

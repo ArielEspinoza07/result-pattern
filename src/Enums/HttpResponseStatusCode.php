@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace ArielEspinoza07\ResultPattern\Enums;
+
 enum HttpResponseStatusCode: int
 {
 // 1xx Informational

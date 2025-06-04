@@ -1,16 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace ArielEspinoza07\ResultPattern;
 
-use ArielEspinoza07\ResultPattern\Contracts\CreateFromMessageAndDataContract;
-use ArielEspinoza07\ResultPattern\Contracts\CreateFromMessageContract;
 use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 use ArielEspinoza07\ResultPattern\Traits\CreateFromMessage;
 use ArielEspinoza07\ResultPattern\Traits\CreateFromMessageAndData;
 
-final readonly class Ok extends Result implements CreateFromMessageAndDataContract, CreateFromMessageContract
+final readonly class Failed extends Result implements Contracts\CreateFromMessageContract, Contracts\CreateFromMessageAndDataContract
 {
     use CreateFromMessage;
     use CreateFromMessageAndData;
@@ -19,8 +15,7 @@ final readonly class Ok extends Result implements CreateFromMessageAndDataContra
         ?string $message = null,
         HttpResponseStatusCode|int|null $status = null,
         ?array $data = [],
-    ): Result
-    {
+    ): Result {
         if ($status instanceof HttpResponseStatusCode) {
             return self::create(
                 isSuccess: false,
@@ -32,8 +27,8 @@ final readonly class Ok extends Result implements CreateFromMessageAndDataContra
 
         return self::create(
             isSuccess: false,
-            message: $message ?? HttpResponseStatusCode::OK->message(),
-            status: $status ?? HttpResponseStatusCode::OK->value,
+            message: $message ?? HttpResponseStatusCode::InternalServerError->message(),
+            status: $status ?? HttpResponseStatusCode::InternalServerError->value,
             data: $data,
         );
     }

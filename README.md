@@ -1,6 +1,6 @@
 # Result Pattern
 
-A modern PHP 8.3+ implementation of the Result pattern for handling operation outcomes and HTTP responses.
+A modern and simple PHP 8.3+ implementation of the Result pattern for handling operation outcomes and HTTP responses.
 
 ## Features
 
@@ -9,8 +9,24 @@ A modern PHP 8.3+ implementation of the Result pattern for handling operation ou
 - 🔒 Immutable objects using PHP 8.3+ readonly classes
 - 🎯 SOLID principles adherence
 - 🧩 Composable and extensible design
-- 🔍 100% type coverage with PHPStan level max
 - 📝 Comprehensive test suite with Pest PHP
+
+## Project Structure
+
+```
+src/
+├── Contracts/
+│   ├── CreateFromMessageAndDataContract.php
+│   └── CreateFromMessageContract.php
+├── Enums/
+│   └── HttpResponseStatusCode.php
+├── Traits/
+│   ├── CreateFromMessage.php
+│   └── CreateFromMessageAndData.php
+├── Failed.php
+├── Ok.php
+└── Result.php
+```
 
 ## Installation
 
@@ -22,16 +38,26 @@ composer require arielespinoza07/result-pattern
 
 ```php
 use ArielEspinoza07\ResultPattern\Ok;
-use ArielEspinoza07\ResultPattern\NotFound;
+use ArielEspinoza07\ResultPattern\Failed;
+use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 
 // Success case
-$result = Ok::from("Operation successful", ["id" => 1]);
+$result = Ok::fromMessageAndData(
+    message: "Operation successful",
+    status: HttpResponseStatusCode::OK,
+    data: ["id" => 1]
+);
+
 if ($result->isSuccess()) {
     $data = $result->data(); // array<string, mixed>
 }
 
 // Error case
-$result = NotFound::from("Resource not found");
+$result = Failed::fromMessage(
+    message: "Resource not found",
+    status: HttpResponseStatusCode::NotFound
+);
+
 echo $result->message(); // "Resource not found"
 echo $result->status(); // 404
 
@@ -47,7 +73,7 @@ $array = $result->toArray();
 */
 ```
 
-## Available Result Types
+## Available Response Codes
 
 ### Informational Responses (1xx)
 - `Continue` (100)
@@ -161,12 +187,12 @@ GitHub Actions automatically run the following checks on push and pull requests:
 
 ### Installation
 ```bash
-composer require windsurf/result-pattern
+composer require arielespinoza07/result-pattern
 ```
 
 ### Development Installation
 ```bash
-git clone https://github.com/windsurf/result-pattern.git
+git https://github.com/ArielEspinoza07/result-pattern.git
 cd result-pattern
 composer install
 ```

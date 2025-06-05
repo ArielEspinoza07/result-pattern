@@ -9,6 +9,9 @@ use ArielEspinoza07\ResultPattern\Result;
 
 interface CreateFromMessageAndDataContract
 {
+    /**
+     * @param array<empty>|array<string, mixed> $data
+     */
     public static function fromMessageAndData(
         string $message,
         HttpResponseStatusCode|int $status,

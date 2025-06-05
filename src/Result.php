@@ -8,6 +8,9 @@ use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 
 /**
  * @phpstan-consistent-constructor
+ *
+ *
+ * @property-read array<empty>|array<string, mixed> $data
  */
 abstract readonly class Result
 {
@@ -15,7 +18,7 @@ abstract readonly class Result
         private bool $isSuccess,
         private string $message,
         private int $status,
-        /** @param array<empty>|array<string, mixed> $data */
+        /** @phpstan-var array<empty>|array<string, mixed> */
         private array $data,
     ) {
     }

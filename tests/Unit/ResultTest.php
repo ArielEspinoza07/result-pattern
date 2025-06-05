@@ -11,8 +11,7 @@ it('ok result', function () {
 
     $result = Ok::fromMessageAndData($message, HttpResponseStatusCode::OK, $data);
 
-    expect($result)
-        ->toBeSuccessResult()
+    expect($result->isSuccess())->toBeTrue()
         ->and($result->message())->toBe($message)
         ->and($result->status())->toBe(200)
         ->and($result->data())->toBe($data);
@@ -23,8 +22,7 @@ it('ok result with message only', function () {
 
     $result = Ok::from($message);
 
-    expect($result)
-        ->toBeSuccessResult()
+    expect($result->isSuccess())->toBeTrue()
         ->and($result->message())->toBe($message)
         ->and($result->status())->toBe(200)
         ->and($result->data())->toBe([]);

@@ -12,6 +12,7 @@ it('create from message contract implementation', function () {
     $message = 'Test message';
     $status = HttpResponseStatusCode::OK;
 
+    /** @var Mockery\ExpectationInterface|Mockery\MockInterface $mock */
     $mock = Mockery::mock(CreateFromMessageContract::class);
     $mock->shouldReceive('fromMessage')
          ->with($message, $status)
@@ -39,6 +40,7 @@ it('create from message and data contract implementation', function () {
     $status = HttpResponseStatusCode::OK;
     $data    = ['key' => 'value'];
 
+    /** @var Mockery\ExpectationInterface|Mockery\MockInterface $mock */
     $mock = Mockery::mock(CreateFromMessageAndDataContract::class);
     $mock->shouldReceive('fromMessageAndData')
         ->with($message, $status, $data)

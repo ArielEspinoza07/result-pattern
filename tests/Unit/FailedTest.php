@@ -11,8 +11,7 @@ it('failed result', function () {
 
     $result = Failed::fromMessageAndData($message, HttpResponseStatusCode::NotFound, $data);
 
-    expect($result)
-        ->toBeErrorResult()
+    expect($result->isSuccess())->toBeFalse()
         ->and($result->message())->toBe($message)
         ->and($result->status())->toBe(404)
         ->and($result->data())->toBe($data);
@@ -23,8 +22,7 @@ it('failed result with message only', function () {
 
     $result = Failed::from($message, HttpResponseStatusCode::NotFound);
 
-    expect($result)
-        ->toBeErrorResult()
+    expect($result->isSuccess())->toBeFalse()
         ->and($result->message())->toBe($message)
         ->and($result->status())->toBe(404)
         ->and($result->data())->toBe([]);

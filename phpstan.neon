@@ -1,21 +1,17 @@
+includes:
+    - vendor/pestphp/pest/extension.neon
+    - vendor/phpstan/phpstan-mockery/extension.neon
+
 parameters:
     level: max
+
     paths:
         - src
         - tests
+
+    stubFiles: []
+
     reportUnmatchedIgnoredErrors: false
+
     ignoreErrors:
-        - 
-            message: '#.*PHPUnit.*TestCase.*#'
-        - 
-            message: '#Call to an undefined method Pest\\Expectation.*#'
-        - 
-            identifier: missingType.iterableValue
-        - 
-            identifier: missingType.generics
-        -
-            message: '#Unsafe usage of new static.*#'
-        -
-            message: '#Method .* should return static.* but returns static.*#'
-        -
-            message: '#Return type .* is not covariant with return type static.*#'
+        - message: '#.*PHPUnit.*TestCase.*#'

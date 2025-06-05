@@ -67,8 +67,8 @@ it('create from message and data contract implementation', function () {
 });
 
 it('result implementations implement required contracts', function () {
-    $okResult     = Ok::from('Success');
-    $failedResult = Failed::from('Error');
+    $okResult     = Ok::from(message:'Success');
+    $failedResult = Failed::from(message:'Error');
 
     expect($okResult)
         ->toBeObject()

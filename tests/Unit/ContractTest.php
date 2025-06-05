@@ -7,7 +7,6 @@ use ArielEspinoza07\ResultPattern\Contracts\CreateFromMessageAndDataContract;
 use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 use ArielEspinoza07\ResultPattern\Ok;
 use ArielEspinoza07\ResultPattern\Failed;
-use ArielEspinoza07\ResultPattern\Result;
 
 it('create from message contract implementation', function () {
     $message = 'Test message';

@@ -10,7 +10,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.4]
+        php: [8.3]
         dependency-version: [prefer-lowest, prefer-stable]
 
     name: Formats P${{ matrix.php }} - ${{ matrix.os }} - ${{ matrix.dependency-version }}
@@ -46,7 +46,7 @@ jobs:
         run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
 
       - name: Coding Style Checks
-        run: ./vendor/bin/pint --test
+        run: composer test:lint
 
       - name: Type Checks
         run: composer test:types

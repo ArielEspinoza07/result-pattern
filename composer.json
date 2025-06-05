@@ -42,6 +42,7 @@
             "pint --test"
         ],
         "test:unit": "pest --parallel --coverage --min=90",
+        "test:unit:parallel": "pest --parallel",
         "test:types": "phpstan",
         "test": [
             "@test:lint",

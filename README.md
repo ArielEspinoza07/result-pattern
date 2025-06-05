@@ -1,5 +1,11 @@
 # Result Pattern
 
+<p>
+  <a href="https://github.com/ArielEspinoza07/result-pattern/actions">
+    <img src="https://github.com/ArielEspinoza07/result-pattern/actions/workflows/tests.yml/badge.svg"  alt="Build Status">
+  </a>
+</p>
+
 A modern and simple PHP 8.3+ implementation of the Result pattern for handling operation outcomes and HTTP responses.
 
 ## Features

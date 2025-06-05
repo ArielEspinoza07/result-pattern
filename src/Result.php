@@ -18,13 +18,13 @@ abstract readonly class Result
         private bool $isSuccess,
         private string $message,
         private int $status,
-        /** @phpstan-var array<empty>|array<string, mixed> */
+        /** @var array<string, mixed> */
         private array $data,
     ) {
     }
 
     /**
-     * @param array<empty>|array<string, mixed>|null $data
+     * @param array<string, mixed>|null $data
      */
     abstract public static function from(
         ?string $message = null,
@@ -33,7 +33,7 @@ abstract readonly class Result
     ): self;
 
     /**
-     * @param array<empty>|array<string, mixed> $data
+     * @param array<string, mixed> $data
      */
     final public static function create(
         bool $isSuccess,
@@ -60,7 +60,7 @@ abstract readonly class Result
     }
 
     /**
-     * @return array<empty>|array<string, mixed> $data
+     * @return array<string, mixed>
      */
     final public function data(): array
     {
@@ -68,7 +68,7 @@ abstract readonly class Result
     }
 
     /**
-     * @return array{success: bool, message: string, status: int, data: array<empty>|array<string, mixed>}
+     * @return array{success: bool, message: string, status: int, data: array<string, mixed>}
      */
     final public function toArray(): array
     {

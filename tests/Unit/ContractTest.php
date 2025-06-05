@@ -4,43 +4,77 @@ declare(strict_types=1);
 
 use ArielEspinoza07\ResultPattern\Contracts\CreateFromMessageContract;
 use ArielEspinoza07\ResultPattern\Contracts\CreateFromMessageAndDataContract;
+use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
+use ArielEspinoza07\ResultPattern\Ok;
+use ArielEspinoza07\ResultPattern\Failed;
 use ArielEspinoza07\ResultPattern\Result;
-use Mockery\MockInterface;
 
-test('create from message contract implementation', function () {
+it('create from message contract implementation', function () {
     $message = 'Test message';
-    /** @var MockInterface&CreateFromMessageContract $mockResult */
-    $mockResult = mock(CreateFromMessageContract::class);
-    $mockResult->shouldReceive('message')->once()->andReturn($message);
-    $mockResult->shouldReceive('from')->with($message)->andReturn($mockResult);
+    $status = HttpResponseStatusCode::OK;
 
-    expect($mockResult)
+    $mock = Mockery::mock(CreateFromMessageContract::class);
+    $mock->shouldReceive('fromMessage')
+         ->with($message, $status)
+         ->andReturn(
+             Ok::from(
+                 message: $message,
+                 status: $status,
+             ),
+         );
+
+    $result = Ok::fromMessage(
+        message: $message,
+        status: $status,
+    );
+
+    expect($result)
         ->toBeObject()
         ->toBeInstanceOf(CreateFromMessageContract::class)
-        ->and($mockResult->message())->toBe($message);
+        ->and($result->message())
+        ->toBe($message);
 });
 
-test('create from message and data contract implementation', function () {
+it('create from message and data contract implementation', function () {
     $message = 'Test message';
-    $data = ['key' => 'value'];
-    /** @var MockInterface&CreateFromMessageAndDataContract $mockResult */
-    $mockResult = mock(CreateFromMessageAndDataContract::class);
-    $mockResult->shouldReceive('message')->once()->andReturn($message);
-    $mockResult->shouldReceive('data')->once()->andReturn($data);
-    $mockResult->shouldReceive('fromMessageAndData')->with($message, $data)->andReturn($mockResult);
+    $status = HttpResponseStatusCode::OK;
+    $data    = ['key' => 'value'];
 
-    expect($mockResult)
+    $mock = Mockery::mock(CreateFromMessageAndDataContract::class);
+    $mock->shouldReceive('fromMessageAndData')
+        ->with($message, $status, $data)
+        ->andReturn(
+            Ok::from(
+                message: $message,
+                status: $status,
+                data: $data,
+            ),
+        );
+
+    $result = Ok::fromMessageAndData(
+        message: $message,
+        status: $status,
+        data: $data,
+    );
+
+    expect($result)
         ->toBeObject()
         ->toBeInstanceOf(CreateFromMessageAndDataContract::class)
-        ->and($mockResult->message())->toBe($message)
-        ->and($mockResult->data())->toBe($data);
+        ->and($result->message())
+        ->toBe($message)
+        ->and($result->data())
+        ->toBe($data);
 });
 
-test('result class implements required contracts', function () {
-    /** @var MockInterface&Result $mockResult */
-    $mockResult = mock(Result::class);
+it('result implementations implement required contracts', function () {
+    $okResult     = Ok::from('Success');
+    $failedResult = Failed::from('Error');
 
-    expect($mockResult)
+    expect($okResult)
+        ->toBeObject()
+        ->toBeInstanceOf(CreateFromMessageContract::class)
+        ->toBeInstanceOf(CreateFromMessageAndDataContract::class)
+        ->and($failedResult)
         ->toBeObject()
         ->toBeInstanceOf(CreateFromMessageContract::class)
         ->toBeInstanceOf(CreateFromMessageAndDataContract::class);

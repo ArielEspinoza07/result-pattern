@@ -5,7 +5,7 @@ declare(strict_types=1);
 use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 use ArielEspinoza07\ResultPattern\Failed;
 
-test('failed result', function () {
+it('failed result', function () {
     $message = 'Resource not found';
     $data = ['resource' => 'user', 'id' => 1];
 
@@ -18,7 +18,7 @@ test('failed result', function () {
         ->and($result->data())->toBe($data);
 });
 
-test('failed result with message only', function () {
+it('failed result with message only', function () {
     $message = 'Resource not found';
 
     $result = Failed::from($message, HttpResponseStatusCode::NotFound);
@@ -30,7 +30,7 @@ test('failed result with message only', function () {
         ->and($result->data())->toBe([]);
 });
 
-test('failed result to array', function () {
+it('failed result to array', function () {
     $message = 'Resource not found';
     $data = ['resource' => 'user', 'id' => 1];
 

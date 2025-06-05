@@ -5,7 +5,7 @@ declare(strict_types=1);
 use ArielEspinoza07\ResultPattern\Ok;
 use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 
-test('ok result', function () {
+it('ok result', function () {
     $message = 'Operation successful';
     $data = ['key' => 'value'];
 
@@ -18,7 +18,7 @@ test('ok result', function () {
         ->and($result->data())->toBe($data);
 });
 
-test('ok result with message only', function () {
+it('ok result with message only', function () {
     $message = 'Operation successful';
 
     $result = Ok::from($message);
@@ -30,7 +30,7 @@ test('ok result with message only', function () {
         ->and($result->data())->toBe([]);
 });
 
-test('ok result to array', function () {
+it('ok result to array', function () {
     $message = 'Operation successful';
     $data = ['key' => 'value'];
 

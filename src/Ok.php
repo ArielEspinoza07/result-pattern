@@ -25,7 +25,7 @@ final readonly class Ok extends Result implements CreateFromMessageAndDataContra
                 isSuccess: true,
                 message: $message ?? $status->message(),
                 status: $status->value,
-                data: $data,
+                data: $data ?? [],
             );
         }
 
@@ -33,7 +33,7 @@ final readonly class Ok extends Result implements CreateFromMessageAndDataContra
             isSuccess: true,
             message: $message ?? HttpResponseStatusCode::OK->message(),
             status: $status ?? HttpResponseStatusCode::OK->value,
-            data: $data,
+            data: $data ?? [],
         );
     }
 }

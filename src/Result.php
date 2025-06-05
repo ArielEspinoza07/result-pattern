@@ -15,13 +15,13 @@ abstract readonly class Result
         private bool $isSuccess,
         private string $message,
         private int $status,
-        /** @var array<string, mixed> */
+        /** @param array<empty>|array<string, mixed> $data */
         private array $data,
     ) {
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<empty>|array<string, mixed>|null $data
      */
     abstract public static function from(
         ?string $message = null,
@@ -30,13 +30,13 @@ abstract readonly class Result
     ): self;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<empty>|array<string, mixed> $data
      */
     final public static function create(
         bool $isSuccess,
         string $message,
         int $status,
-        array $data,
+        array $data = [],
     ): static {
         return new static($isSuccess, $message, $status, $data);
     }
@@ -57,7 +57,7 @@ abstract readonly class Result
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<empty>|array<string, mixed> $data
      */
     final public function data(): array
     {
@@ -65,7 +65,7 @@ abstract readonly class Result
     }
 
     /**
-     * @return array{success: bool, message: string, status: int, data: array<string, mixed>}
+     * @return array{success: bool, message: string, status: int, data: array<empty>|array<string, mixed>}
      */
     final public function toArray(): array
     {

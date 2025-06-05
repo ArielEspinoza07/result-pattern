@@ -23,7 +23,7 @@ final readonly class Failed extends Result implements Contracts\CreateFromMessag
                 isSuccess: false,
                 message: $message ?? $status->message(),
                 status: $status->value,
-                data: $data,
+                data: $data ?? [],
             );
         }
 
@@ -31,7 +31,7 @@ final readonly class Failed extends Result implements Contracts\CreateFromMessag
             isSuccess: false,
             message: $message ?? HttpResponseStatusCode::InternalServerError->message(),
             status: $status ?? HttpResponseStatusCode::InternalServerError->value,
-            data: $data,
+            data: $data ?? [],
         );
     }
 }

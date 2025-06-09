@@ -1,6 +1,11 @@
 name: Formats
 
-on: ['push', 'pull_request']
+on:
+  push:
+    branches: [ 'feature/*', 'fix/*']
+  pull_request:
+    branches:
+      - main
 
 jobs:
   ci:

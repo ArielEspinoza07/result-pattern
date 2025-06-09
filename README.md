@@ -4,6 +4,9 @@
   <a href="https://github.com/ArielEspinoza07/result-pattern/actions">
     <img src="https://github.com/ArielEspinoza07/result-pattern/actions/workflows/tests.yml/badge.svg"  alt="Build Status">
   </a>
+  <a href="https://github.com/ArielEspinoza07/result-pattern/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
+  </a>
 </p>
 
 A modern and simple PHP 8.3+ implementation of the Result pattern for handling operation outcomes and HTTP responses.
@@ -246,4 +249,4 @@ This package uses several development tools: to ensure code quality and maintain
 
 ## License
 
-MIT License
+[MIT License](LICENSE)

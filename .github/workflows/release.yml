@@ -1,0 +1,55 @@
+name: 🚀 Automated Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'New release version (e.g. v1.0.0)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🧰 Setup Node.js (for changelog)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: 🧱 Install changelog generator
+        run: npm install -g conventional-changelog-cli
+
+      - name: 📝 Generate changelog
+        run: |
+          conventional-changelog -p angular -i CHANGELOG.md -s
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add CHANGELOG.md
+          git commit -m "docs(changelog): update changelog" || echo "No changes to commit"
+
+      - name: 🏷️ Create Git tag
+        run: |
+          git tag -a "${{ github.event.inputs.version }}" -m "Release ${{ github.event.inputs.version }}"
+          git push origin HEAD
+          git push origin "${{ github.event.inputs.version }}"
+
+      - name: 📖 Extract changelog for tag
+        id: extract_changelog
+        run: |
+          changelog=$(awk "/^## ${{ github.event.inputs.version }}/,/^## /" CHANGELOG.md | sed '$d')
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$changelog" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 🚀 Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: ${{ github.event.inputs.version }}
+          body: ${{ steps.extract_changelog.outputs.body }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

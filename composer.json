@@ -55,7 +55,13 @@
         "analyse": "phpstan analyse",
         "pint": "pint",
         "rector:check": "rector process --dry-run",
-        "rector:fix": "rector process"
+        "rector:fix": "rector process",
+        "changelog:generate": "conventional-changelog -p angular -i CHANGELOG.md -s",
+        "release": [
+            "@changelog:generate",
+            "git add CHANGELOG.md",
+            "git commit -m \"docs(changelog): update changelog\""
+        ]
     },
     "minimum-stability": "stable",
     "config": {

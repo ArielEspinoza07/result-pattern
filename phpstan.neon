@@ -1,6 +1,6 @@
 includes:
-    - vendor/pestphp/pest/extension.neon
-    - vendor/phpstan/phpstan-mockery/extension.neon
+    - ./vendor/pestphp/pest/extension.neon
+    - ./vendor/phpstan/phpstan-mockery/extension.neon
 
 parameters:
     level: max

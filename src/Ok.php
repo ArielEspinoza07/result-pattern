@@ -21,6 +21,7 @@ final readonly class Ok extends Result implements CreateFromMessageAndDataContra
         ?array $data = [],
     ): Result {
         if ($status instanceof HttpResponseStatusCode) {
+
             return self::create(
                 isSuccess: true,
                 message: $message ?? $status->message(),
@@ -29,10 +30,15 @@ final readonly class Ok extends Result implements CreateFromMessageAndDataContra
             );
         }
 
+        $status = match (true) {
+            is_int($status) => HttpResponseStatusCode::from($status),
+            default => HttpResponseStatusCode::OK,
+        };
+
         return self::create(
             isSuccess: true,
-            message: $message ?? HttpResponseStatusCode::OK->message(),
-            status: $status ?? HttpResponseStatusCode::OK->value,
+            message: $message ?? $status->message(),
+            status: $status->value,
             data: $data ?? [],
         );
     }

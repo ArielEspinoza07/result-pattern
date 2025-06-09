@@ -19,6 +19,7 @@ final readonly class Failed extends Result implements Contracts\CreateFromMessag
         ?array $data = [],
     ): Result {
         if ($status instanceof HttpResponseStatusCode) {
+
             return self::create(
                 isSuccess: false,
                 message: $message ?? $status->message(),
@@ -27,10 +28,15 @@ final readonly class Failed extends Result implements Contracts\CreateFromMessag
             );
         }
 
+        $status = match (true) {
+            is_int($status) => HttpResponseStatusCode::from($status),
+            default => HttpResponseStatusCode::InternalServerError,
+        };
+
         return self::create(
             isSuccess: false,
-            message: $message ?? HttpResponseStatusCode::InternalServerError->message(),
-            status: $status ?? HttpResponseStatusCode::InternalServerError->value,
+            message: $message ?? $status->message(),
+            status: $status->value,
             data: $data ?? [],
         );
     }

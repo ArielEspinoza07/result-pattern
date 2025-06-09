@@ -7,22 +7,12 @@
          stopOnFailure="true">
     <testsuites>
         <testsuite name="Unit">
-            <directory>tests/Unit</directory>
+            <directory suffix=".php">./tests</directory>
         </testsuite>
     </testsuites>
-    <coverage>
-        <report>
-            <html outputDirectory="coverage"/>
-            <clover outputFile="coverage/coverage.xml"/>
-            <text outputFile="coverage/coverage.txt"/>
-        </report>
-    </coverage>
     <source>
         <include>
-            <directory suffix=".php">src</directory>
+            <directory suffix=".php">./src</directory>
         </include>
     </source>
-    <php>
-        <env name="APP_ENV" value="testing"/>
-    </php>
 </phpunit>

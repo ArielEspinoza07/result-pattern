@@ -244,17 +244,6 @@ This package uses several development tools: to ensure code quality and maintain
   composer rector    # Run code quality checks
   ```
 
-Custom expectations are available for Result objects:
-```php
-expect($result)
-    ->toBeSuccessResult()
-    ->and($result->status())->toBe(200);
-
-expect($result)
-    ->toBeErrorResult()
-    ->and($result->status())->toBe(404);
-```
-
 ## License
 
 MIT License

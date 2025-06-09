@@ -4,6 +4,12 @@
   <a href="https://github.com/ArielEspinoza07/result-pattern/actions">
     <img src="https://github.com/ArielEspinoza07/result-pattern/actions/workflows/tests.yml/badge.svg"  alt="Build Status">
   </a>
+  <a href="https://packagist.org/packages/arielespinoza07/result-pattern">
+    <img src="https://img.shields.io/packagist/dt/arielespinoza07/result-pattern.svg?style=flat-square" alt="Total Downloads">
+  </a>
+  <a href="https://packagist.org/packages/arielespinoza07/result-pattern">
+    <img src="https://img.shields.io/packagist/v/arielespinoza07/result-pattern.svg?style=flat-square" alt="Latest Stable Version">
+  </a>
   <a href="https://github.com/ArielEspinoza07/result-pattern/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
   </a>

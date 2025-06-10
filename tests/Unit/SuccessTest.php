@@ -24,32 +24,30 @@ it('throws when getting error from success', function () {
     expect(fn () => $result->getError())->toThrow(RuntimeException::class);
 });
 
-describe('Success transformations', function () {
-    it('maps value correctly', function () {
-        $result = Result::success(2)
-            ->map(fn (int $x): int => $x * 3);
+it('maps value correctly', function () {
+    $result = Result::success(2)
+                    ->map(fn (int $x): int => $x * 3);
 
-        expect($result->getValue())->toBe(6);
-    });
+    expect($result->getValue())->toBe(6);
+});
 
-    it('flatMaps to new success', function () {
-        $result = Result::success(2)
-            ->flatMap(fn (int $x): Result => Result::success($x * 3));
+it('flatMaps to new success', function () {
+    $result = Result::success(2)
+                    ->flatMap(fn (int $x): Result => Result::success($x * 3));
 
-        expect($result->getValue())->toBe(6);
-    });
+    expect($result->getValue())->toBe(6);
+});
 
-    it('flatMaps to failure', function () {
-        $result = Result::success(2)
-            ->flatMap(function (int $x): Result {
-                return Result::failure('Mapped error');
-            });
+it('flatMaps to failure', function () {
+    $result = Result::success(2)
+                    ->flatMap(function (int $x): Result {
+                        return Result::failure('Mapped error');
+                    });
 
-        expect($result->isFailure())
-            ->toBeTrue()
-            ->and($result->getError())
-            ->toBe('Mapped error');
-    });
+    expect($result->isFailure())
+        ->toBeTrue()
+        ->and($result->getError())
+        ->toBe('Mapped error');
 });
 
 it('executes onSuccess callback', function () {

@@ -24,20 +24,18 @@ it('throws when getting value from failure', function () {
     expect(fn () => $result->getValue())->toThrow(RuntimeException::class);
 });
 
-describe('Failure transformations', function () {
-    it('ignores map', function () {
-        $original = Result::failure('original error');
-        $result = $original->map(fn ($x) => $x * 3);
+it('ignores map', function () {
+    $original = Result::failure('original error');
+    $result = $original->map(fn ($x) => $x * 3);
 
-        expect($result)->toBe($original);
-    });
+    expect($result)->toBe($original);
+});
 
-    it('ignores flatMap', function () {
-        $original = Result::failure('original error');
-        $result = $original->flatMap(fn ($x) => Result::success(42));
+it('ignores flatMap', function () {
+    $original = Result::failure('original error');
+    $result = $original->flatMap(fn ($x) => Result::success(42));
 
-        expect($result)->toBe($original);
-    });
+    expect($result)->toBe($original);
 });
 
 it('executes onFailure callback', function () {

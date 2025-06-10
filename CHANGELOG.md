@@ -1,12 +1,6 @@
-#  (2025-06-09)
+# Changelog
 
+## 2025-06-10
 
-
-#  (2025-06-09)
-
-
-
-#  (2025-06-09)
-
-
+* Merge pull request #4 from ArielEspinoza07/feature/refactor-result
 

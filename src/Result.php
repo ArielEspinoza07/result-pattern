@@ -4,79 +4,130 @@ declare(strict_types=1);
 
 namespace ArielEspinoza07\ResultPattern;
 
-use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
+use Throwable;
 
 /**
- * @phpstan-consistent-constructor
- *
- *
- * @property-read array<empty>|array<string, mixed> $data
+ * @template TValue
+ * @template TError
  */
 abstract readonly class Result
 {
-    private function __construct(
-        private bool $isSuccess,
-        private string $message,
-        private int $status,
-        /** @var array<string, mixed> */
-        private array $data,
-    ) {
+    abstract public function isSuccess(): bool;
+
+    abstract public function isFailure(): bool;
+
+    /** @return TValue */
+    abstract public function getValue(): mixed;
+
+    /** @return TError */
+    abstract public function getError(): mixed;
+
+    /**
+     * @template T
+     *
+     * @param  T  $value
+     * @return self<T, never>
+     */
+    final public static function success(mixed $value): self
+    {
+        return new Success($value);
     }
 
     /**
-     * @param array<string, mixed>|null $data
+     * @template E
+     *
+     * @param  E  $error
+     * @return self<never, E>
      */
-    abstract public static function from(
-        ?string $message = null,
-        HttpResponseStatusCode|int|null $status = null,
-        ?array $data = []
-    ): self;
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    final public static function create(
-        bool $isSuccess,
-        string $message,
-        int $status,
-        array $data = [],
-    ): static {
-        return new static($isSuccess, $message, $status, $data);
-    }
-
-    final public function isSuccess(): bool
+    final public static function failure(mixed $error): self
     {
-        return $this->isSuccess;
-    }
-
-    final public function message(): string
-    {
-        return $this->message;
-    }
-
-    final public function status(): int
-    {
-        return $this->status;
+        return new Failure($error);
     }
 
     /**
-     * @return array<string, mixed>
+     * Executes an operation and catches exceptions such as Failure.
+     *
+     * @template TNewValue
+     *
+     * @param  callable(): TNewValue  $operation
+     * @return self<TNewValue, Throwable>
      */
-    final public function data(): array
+    final public static function try(callable $operation): self
     {
-        return $this->data;
+        try {
+            /** @var Success<TNewValue> */
+            return self::success($operation());
+        } catch (Throwable $e) {
+            /** @var Failure<Throwable> */
+            return self::failure($e);
+        }
     }
 
     /**
-     * @return array{success: bool, message: string, status: int, data: array<string, mixed>}
+     * Executes a callback if it is a Success.
+     *
+     * @param  callable(TValue): void  $fn
+     * @return self<TValue, TError>
      */
-    final public function toArray(): array
+    final public function onSuccess(callable $fn): self
     {
-        return [
-            'success' => $this->isSuccess(),
-            'message' => $this->message(),
-            'status' => $this->status(),
-            'data' => $this->data(),
-        ];
+        if ($this->isSuccess()) {
+            $fn($this->getValue());
+        }
+
+        return $this;
+    }
+
+    /**
+     * Executes a callback if it is Failure.
+     *
+     * @param  callable(TError): void  $fn
+     * @return self<TValue, TError>
+     */
+    final public function onFailure(callable $fn): self
+    {
+        if ($this->isFailure()) {
+            $fn($this->getError());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @template TNewValue
+     *
+     * @param  callable(TValue): TNewValue  $fn
+     * @return self<TNewValue, TError>
+     */
+    final public function map(callable $fn): self
+    {
+        return $this->isSuccess()
+            ? new Success($fn($this->getValue()))
+            : $this;
+    }
+
+    /**
+     * @template TNewValue
+     *
+     * @param  callable(TValue): self<TNewValue, TError>  $fn
+     * @return self<TNewValue, TError>
+     */
+    final public function flatMap(callable $fn): self
+    {
+        return $this->isSuccess() ? $fn($this->getValue()) : $this;
+    }
+
+    /**
+     * @template TOutput
+     *
+     * @param  callable(TValue): TOutput  $onSuccess
+     * @param  callable(TError): TOutput  $onFailure
+     * @return TOutput
+     */
+    final public function fold(callable $onSuccess, callable $onFailure): mixed
+    {
+        return $this->isSuccess()
+            ? $onSuccess($this->getValue())
+            : $onFailure($this->getError());
     }
 }

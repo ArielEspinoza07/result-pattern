@@ -83,7 +83,7 @@ enum HttpResponseStatusCode: int
      */
     public function message(): string
     {
-        return match($this) {
+        return match ($this) {
             // 1xx Informational
             self::Continue => 'Continue',
             self::SwitchingProtocols => 'Switching Protocols',

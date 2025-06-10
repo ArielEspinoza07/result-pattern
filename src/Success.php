@@ -13,7 +13,9 @@ use RuntimeException;
 final readonly class Success extends Result
 {
     /** @param TValue $value */
-    public function __construct(private mixed $value) {}
+    public function __construct(private mixed $value)
+    {
+    }
 
     public function isSuccess(): bool
     {

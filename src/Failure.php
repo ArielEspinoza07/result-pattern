@@ -13,7 +13,9 @@ use RuntimeException;
 final readonly class Failure extends Result
 {
     /** @param TError $error */
-    public function __construct(private mixed $error) {}
+    public function __construct(private mixed $error)
+    {
+    }
 
     public function isSuccess(): bool
     {

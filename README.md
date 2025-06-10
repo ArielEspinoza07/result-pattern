@@ -43,6 +43,18 @@ src/
 composer require arielespinoza07/result-pattern
 ```
 
+## Documentation
+
+The following documentation files provide examples and usage patterns for the Result pattern:
+
+- [Basic Success and Failure Examples](docs/basic-examples.md) - Creating and using Success and Failure objects
+- [Try Method Examples](docs/try-method-examples.md) - Using the `try` method to handle operations that might throw exceptions
+- [onSuccess and onFailure Examples](docs/on-success-failure-examples.md) - Using callbacks for Success and Failure cases
+- [Map Method Examples](docs/map-method-examples.md) - Transforming values inside Success results
+- [FlatMap Method Examples](docs/flat-map-method-examples.md) - Transforming Success results into new Result objects
+- [Fold Method Examples](docs/fold-method-examples.md) - Handling both Success and Failure cases with a single return value
+- [Error Handling Examples](docs/error-handling-examples.md) - Proper error handling techniques and best practices
+
 ## Available Response Codes
 
 ### Informational Responses (1xx)

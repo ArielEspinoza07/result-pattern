@@ -30,16 +30,10 @@ A modern and simple PHP 8.3+ implementation of the Result pattern for handling o
 
 ```
 src/
-├── Contracts/
-│   ├── CreateFromMessageAndDataContract.php
-│   └── CreateFromMessageContract.php
 ├── Enums/
 │   └── HttpResponseStatusCode.php
-├── Traits/
-│   ├── CreateFromMessage.php
-│   └── CreateFromMessageAndData.php
-├── Failed.php
-├── Ok.php
+├── Failure.php
+├── Success.php
 └── Result.php
 ```
 
@@ -47,45 +41,6 @@ src/
 
 ```bash
 composer require arielespinoza07/result-pattern
-```
-
-## Usage
-
-```php
-use ArielEspinoza07\ResultPattern\Ok;
-use ArielEspinoza07\ResultPattern\Failed;
-use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
-
-// Success case
-$result = Ok::fromMessageAndData(
-    message: "Operation successful",
-    status: HttpResponseStatusCode::OK,
-    data: ["id" => 1]
-);
-
-if ($result->isSuccess()) {
-    $data = $result->data(); // array<string, mixed>
-}
-
-// Error case
-$result = Failed::fromMessage(
-    message: "Resource not found",
-    status: HttpResponseStatusCode::NotFound
-);
-
-echo $result->message(); // "Resource not found"
-echo $result->status(); // 404
-
-// Convert to array
-$array = $result->toArray();
-/*
-[
-    'success' => false,
-    'message' => 'Resource not found',
-    'status' => 404,
-    'data' => []
-]
-*/
 ```
 
 ## Available Response Codes

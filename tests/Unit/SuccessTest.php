@@ -42,7 +42,7 @@ describe('Success transformations', function () {
     it('flatMaps to failure', function () {
         $result = Result::success(2)
             ->flatMap(function (int $x): Result {
-                return Result::failure('Mapped error ');
+                return Result::failure('Mapped error');
             });
 
         expect($result->isFailure())

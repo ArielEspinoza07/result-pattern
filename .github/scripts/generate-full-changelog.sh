@@ -1,28 +1,28 @@
 #!/bin/bash
 set -e
 
-# Inicializar contenido
+# Initialize content
 FULL_CHANGELOG="# Changelog\n\n"
 
-# Obtener todos los tags en orden
-TAGS=($(git tag --sort=creatordate))
+# Get all tags in order (desc)
+TAGS=($(git tag --sort=-creatordate))
 
-# Si no hay tags, terminar
+# If there are no tags, finish
 if [ ${#TAGS[@]} -eq 0 ]; then
   echo "No tags found. Exiting."
   exit 0
 fi
 
-# Agregar un pseudo-tag inicial para el primer commit
+# Add an initial pseudo-tag for the first commit
 PREVIOUS=""
 for CURRENT in "${TAGS[@]}"; do
   DATE=$(git log -1 --format=%ad --date=short "$CURRENT")
   FULL_CHANGELOG+="## $CURRENT - $DATE\n"
 
-  # Definir el rango de commits
+  # Define the commit range
   RANGE="${PREVIOUS:+$PREVIOUS..}$CURRENT"
 
-  # Inicializar secciones
+  # Initialize sections
   ADDED="" FIXED="" CHANGED="" DOCS="" OTHER=""
 
   while IFS= read -r COMMIT; do
@@ -48,5 +48,5 @@ for CURRENT in "${TAGS[@]}"; do
   PREVIOUS="$CURRENT"
 done
 
-# Guardar en CHANGELOG.md
+# Save to CHANGELOG.md
 echo -e "$FULL_CHANGELOG" > CHANGELOG.md

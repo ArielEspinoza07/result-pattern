@@ -1,19 +1,7 @@
 # Changelog
-
-## v2.0.0 - 2025-06-10
+## v1.0.0 - 2025-06-19
 
 ### Added
-- remove file
-- Changelog remove commands from scripts add file generate-changelog.sh modify action
-- remove blank space
-- modiy paths
-- remove docblocks
-- run pint
-- Result add tests
-- Result add new classes (Result, Success, and Failure)
-- add specific instructions
-- add ref
-- update
 - Release add automated action add CHANGELOG file add scripts to composer.json
 - clean readme
 - remove configuration phpunit
@@ -73,32 +61,55 @@
 - Result Pattern add missing classes fix imports
 - add license and readme
 - add phpunit
-- update composer
 
 ### Fixed
-- remove describe, move tests to the top level
-- run pint
 - modify includes
 - modify includes
 
 ### Changed
-- Result delete Contracts directory delete tests delete classes (Result, Ok, Failed)
 - add MIT license
 - clean from method
+
+### Docs
+- update changelog
+
+
+## v1.0.1 - 2025-06-19
+
+### Docs
+- update changelog
+
+
+## v1.0.2 - 2025-06-19
+
+### Added
+- add specific instructions
+
+### Docs
+- update changelog
+
+
+## v2.0.0 - 2025-06-19
+
+### Added
+- remove file
+- Changelog remove commands from scripts add file generate-changelog.sh modify action
+- remove blank space
+- modiy paths
+- remove docblocks
+- run pint
+- Result add tests
+- Result add new classes (Result, Success, and Failure)
+
+### Fixed
+- remove describe, move tests to the top level
+- run pint
 
 ### Docs
 - update changelog
 - add Documentation
 - add examples
 - remove usage
-- update changelog
-- update changelog
-- update changelog
 
-## v1.0.2 - 2025-06-09
-
-## v1.0.1 - 2025-06-09
-
-## v1.0.0 - 2025-06-09
 
 

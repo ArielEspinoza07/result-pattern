@@ -1,29 +1,32 @@
 #!/bin/bash
+
 set -e
 
-# Initialize content
-FULL_CHANGELOG="# Changelog\n\n"
+# Get all tags sorted by version (oldest to newest)
+TAGS=($(git tag --sort=creatordate))
 
-# Get all tags in order (desc)
-TAGS=($(git tag --sort=-creatordate))
+# Get today's date
+TODAY=$(date +%F)
 
-# If there are no tags, finish
-if [ ${#TAGS[@]} -eq 0 ]; then
-  echo "No tags found. Exiting."
-  exit 0
-fi
+# Initialize final changelog
+FINAL_CHANGELOG="# Changelog\n"
 
-# Add an initial pseudo-tag for the first commit
-PREVIOUS=""
-for CURRENT in "${TAGS[@]}"; do
-  DATE=$(git log -1 --format=%ad --date=short "$CURRENT")
-  FULL_CHANGELOG+="## $CURRENT - $DATE\n"
+for ((i = 0; i < ${#TAGS[@]}; i++)); do
+  TAG=${TAGS[$i]}
+  NEXT_TAG=${TAGS[$((i + 1))]}
 
-  # Define the commit range
-  RANGE="${PREVIOUS:+$PREVIOUS..}$CURRENT"
+  # Determine range: last tag to current
+  if [ "$i" -eq 0 ]; then
+    RANGE=$(git rev-list --max-parents=0 HEAD)..$TAG
+  else
+    RANGE="${TAGS[$((i-1))]}..$TAG"
+  fi
 
-  # Initialize sections
-  ADDED="" FIXED="" CHANGED="" DOCS="" OTHER=""
+  # Start section
+  CHANGELOG="## $TAG - $TODAY\n"
+
+  # Reset sections
+  ADDED=""; FIXED=""; CHANGED=""; DOCS=""; OTHER=""
 
   while IFS= read -r COMMIT; do
     TYPE=$(echo "$COMMIT" | sed -nE 's/^([a-z]+)\(.+\):.*/\1/p')
@@ -38,15 +41,16 @@ for CURRENT in "${TAGS[@]}"; do
     esac
   done < <(git log $RANGE --pretty=format:"%s" --no-merges)
 
-  [ -n "$ADDED" ] && FULL_CHANGELOG+="\n### Added\n$ADDED"
-  [ -n "$FIXED" ] && FULL_CHANGELOG+="\n### Fixed\n$FIXED"
-  [ -n "$CHANGED" ] && FULL_CHANGELOG+="\n### Changed\n$CHANGED"
-  [ -n "$DOCS" ] && FULL_CHANGELOG+="\n### Docs\n$DOCS"
-  [ -n "$OTHER" ] && FULL_CHANGELOG+="\n### Other\n$OTHER"
-  FULL_CHANGELOG+="\n"
+  # Append sections
+  [ -n "$ADDED" ] && CHANGELOG+="\n### Added\n$ADDED"
+  [ -n "$FIXED" ] && CHANGELOG+="\n### Fixed\n$FIXED"
+  [ -n "$CHANGED" ] && CHANGELOG+="\n### Changed\n$CHANGED"
+  [ -n "$DOCS" ] && CHANGELOG+="\n### Docs\n$DOCS"
+  [ -n "$OTHER" ] && CHANGELOG+="\n### Other\n$OTHER"
+  [ -z "$ADDED$FIXED$CHANGED$DOCS$OTHER" ] && CHANGELOG+="\n_No changes found._"
 
-  PREVIOUS="$CURRENT"
+  FINAL_CHANGELOG+="$CHANGELOG\n\n"
 done
 
-# Save to CHANGELOG.md
-echo -e "$FULL_CHANGELOG" > CHANGELOG.md
+# Write final changelog
+echo -e "$FINAL_CHANGELOG" > CHANGELOG.md

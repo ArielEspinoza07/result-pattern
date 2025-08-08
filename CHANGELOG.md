@@ -1,3 +1,7 @@
+## v2.1.0 - 2025-08-08
+
+_No changes since last release._
+
 # Changelog
 ## v2.0.0 - 2025-06-10
 
@@ -111,6 +115,3 @@
 
 ### Docs
 - update changelog
-
-
-

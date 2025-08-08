@@ -17,6 +17,9 @@ jobs:
         with:
           ref: main
 
+      - name: 🔍 Check .github/scripts directory
+        run: ls -la .github/scripts
+
       - name: 📝 Generate changelog (Bash)
         run: |
           chmod +x .github/scripts/generate-changelog.sh

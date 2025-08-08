@@ -13,10 +13,14 @@ jobs:
         with:
           fetch-depth: 0 # ⚠️ necesario para acceder a todos los tags
 
-      - name: Run full changelog generator
-        run: |
-          chmod +x .github/scripts/generate-full-changelog.sh
-          .github/scripts/generate-full-changelog.sh
+      - name: 🕵️ Check .github/scripts directory
+        run: ls -la .github/scripts
+
+      - name: 💪 Make script executable
+        run: chmod +x .github/scripts/generate-full-changelog.sh
+
+      - name: 📝 Generate full changelog
+        run: sh .github/scripts/generate-full-changelog.sh
 
       - name: Commit updated changelog
         run: |

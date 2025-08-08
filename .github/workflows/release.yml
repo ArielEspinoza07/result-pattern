@@ -17,13 +17,14 @@ jobs:
         with:
           ref: main
 
-      - name: 🔍 Check .github/scripts directory
+      - name: 🕵️ Check .github/scripts directory
         run: ls -la .github/scripts
 
-      - name: 📝 Generate changelog (Bash)
-        run: |
-          chmod +x .github/scripts/generate-changelog.sh
-          .github/scripts/generate-changelog.sh "${{ github.event.inputs.version }}"
+      - name: 💪 Make script executable
+        run: chmod +x .github/scripts/generate-changelog.sh
+
+      - name: 📝 Generate changelog
+        run: sh .github/scripts/generate-changelog.sh "${{ github.event.inputs.version }}"
 
       - name: 🏷️ Create Git tag
         run: |

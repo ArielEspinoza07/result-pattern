@@ -1,8 +1,33 @@
+# Changelog
 ## v2.1.0 - 2025-08-08
 
-_No changes since last release._
+### Added
+- update (#9)
+- update dependencies (#8)
 
-# Changelog
+### Fixed
+- comment line (#13)
+
+### Changed
+- add link to http-response-code.md (#7)
+- README.md clean readme file add http-response-code.md
+- modify script
+- modify script
+- script change tags order change comments language
+
+### Docs
+- update changelog for v2.1.0
+- regenerate full changelog
+- regenerate full changelog
+- regenerate full changelog
+- regenerate full changelog
+
+### Other
+- Feature/update actions (#12)
+- Feature/update actions (#11)
+- Feature/update actions (#10)
+
+
 ## v2.0.0 - 2025-06-10
 
 ### Added
@@ -115,3 +140,6 @@ _No changes since last release._
 
 ### Docs
 - update changelog
+
+
+

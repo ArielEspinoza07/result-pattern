@@ -65,7 +65,7 @@ The following documentation files provide examples and usage patterns for the Re
 - [FlatMap Method Examples](docs/flat-map-method-examples.md) - Transforming Success results into new Result objects
 - [Fold Method Examples](docs/fold-method-examples.md) - Handling both Success and Failure cases with a single return value
 - [Error Handling Examples](docs/error-handling-examples.md) - Proper error handling techniques and best practices
-
+- [HTTP Response Code Available](docs/http-response-code.md)
 ---
 
 ## Available Response Codes

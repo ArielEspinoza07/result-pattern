@@ -20,7 +20,7 @@ jobs:
         run: chmod +x .github/scripts/generate-full-changelog.sh
 
       - name: 📝 Generate full changelog
-        run: sh .github/scripts/generate-full-changelog.sh
+        run: bash .github/scripts/generate-full-changelog.sh
 
       - name: Commit updated changelog
         run: |

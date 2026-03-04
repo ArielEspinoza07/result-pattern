@@ -7,12 +7,12 @@
          stopOnFailure="true">
     <testsuites>
         <testsuite name="Unit">
-            <directory suffix=".php">./tests</directory>
+            <directory>tests/Unit</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
-            <directory suffix=".php">./src</directory>
+            <directory>src</directory>
         </include>
     </source>
 </phpunit>

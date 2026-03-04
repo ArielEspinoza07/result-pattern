@@ -67,17 +67,6 @@ abstract readonly class Result
         }
     }
 
-    /** @param array<class-string<Throwable>> $classes */
-    private static function isInstanceOfAny(Throwable $e, array $classes): bool
-    {
-        foreach ($classes as $class) {
-            if ($e instanceof $class) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * @deprecated Use attempt() instead. 'try' is a PHP reserved keyword that causes IDE friction.
      *
@@ -328,5 +317,16 @@ abstract readonly class Result
         return $this->isSuccess()
             ? $onSuccess($this->getValue())
             : $onFailure($this->getError());
+    }
+
+    /** @param array<class-string<Throwable>> $classes */
+    private static function isInstanceOfAny(Throwable $e, array $classes): bool
+    {
+        foreach ($classes as $class) {
+            if ($e instanceof $class) {
+                return true;
+            }
+        }
+        return false;
     }
 }

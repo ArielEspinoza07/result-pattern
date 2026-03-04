@@ -6,7 +6,7 @@ use ArielEspinoza07\ResultPattern\Result;
 
 it('transforms error on failure', function () {
     $result = Result::failure('raw error')
-        ->mapError(fn (string $e): string => strtoupper($e));
+        ->mapError(fn (string $e): string => mb_strtoupper($e));
 
     expect($result->isFailure())->toBeTrue()
         ->and($result->getError())->toBe('RAW ERROR');

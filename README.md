@@ -90,10 +90,10 @@ $output = $result->fold(
 |--------|-------------|
 | `Result::success($value)` | Wraps a value in a `Success` |
 | `Result::failure($error)` | Wraps an error in a `Failure` |
-| `Result::attempt(callable)` | Executes a callable; catches `Throwable` as `Failure` |
+| `Result::attempt(callable, array $only = [])` | Executes a callable; catches `Throwable` as `Failure`. Pass `$only` to catch only specific exception types. |
 | `Result::fromNullable($value, $error)` | `null` → `Failure($error)`, non-null → `Success($value)` |
-| `Result::zip(Result ...$results)` | All succeed → `Success([values])`, first failure wins |
-| `Result::collect(array $results)` | Like `zip` but accepts a plain array |
+| `Result::zip(Result ...$results)` | All succeed → `Success([values])`, first failure wins (fail-fast) |
+| `Result::collect(array $results)` | Processes all results; returns `Failure([errors])` with every error collected (fail-all) |
 
 ### Instance methods
 
@@ -123,10 +123,15 @@ $output = $result->fold(
 
 - [Basic Success and Failure Examples](docs/basic-examples.md)
 - [attempt() / try() Method Examples](docs/try-method-examples.md)
+- [zip() and collect() Examples](docs/zip-collect-examples.md)
+- [fromNullable() Examples](docs/from-nullable-examples.md)
 - [onSuccess and onFailure Examples](docs/on-success-failure-examples.md)
+- [tap() and toNullable() Examples](docs/tap-to-nullable-examples.md)
 - [Map Method Examples](docs/map-method-examples.md)
+- [mapError() and flatMapError() Examples](docs/map-error-examples.md)
 - [FlatMap Method Examples](docs/flat-map-method-examples.md)
 - [Fold Method Examples](docs/fold-method-examples.md)
+- [recover() and recoverWith() Examples](docs/recover-examples.md)
 - [Error Handling Examples](docs/error-handling-examples.md)
 
 ---

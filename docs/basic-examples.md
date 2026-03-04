@@ -5,13 +5,12 @@ This document demonstrates how to create and use basic Success and Failure objec
 ## Creating a Success Result
 
 ```php
-use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 use ArielEspinoza07\ResultPattern\Result;
 
 // Create a Success result with some data
 $success = Result::success([
-    'status' => HttpResponseStatusCode::OK->value,
-    'message' => HttpResponseStatusCode::OK->message(),
+    'status' => 200,
+    'message' => 'OK',
     'data' => [],
 ]);
 ```
@@ -39,8 +38,8 @@ $isFailure = $success->isFailure(); // false
 ```php
 // Create a Failure result with an error
 $failure = Result::failure([
-    'status' => HttpResponseStatusCode::NotFound->value,
-    'message' => HttpResponseStatusCode::NotFound->message(),
+    'status' => 404,
+    'message' => 'Not Found',
 ]);
 ```
 
@@ -59,4 +58,14 @@ $isSuccess = $failure->isSuccess(); // false
 
 // Check if it's a Failure
 $isFailure = $failure->isFailure(); // true
+```
+
+## Safe access with defaults
+
+```php
+// Get value with a fallback — never throws
+$value = $success->getValueOr('default'); // the actual value
+
+// Get error with a fallback — never throws
+$error = $failure->getErrorOr('no error'); // the actual error
 ```

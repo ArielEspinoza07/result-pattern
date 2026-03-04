@@ -1,6 +1,8 @@
-# Try Method Examples
+# attempt() / try() Method Examples
 
-This document demonstrates how to use the `try` method of the Result pattern to handle operations that might throw exceptions.
+This document demonstrates how to use `attempt()` to handle operations that might throw exceptions.
+
+> **Note:** `try()` is deprecated in favour of `attempt()`. The name `try` conflicts with a PHP reserved keyword and causes IDE friction. Use `attempt()` in all new code.
 
 ## Successful Operation
 
@@ -8,30 +10,42 @@ This document demonstrates how to use the `try` method of the Result pattern to 
 use ArielEspinoza07\ResultPattern\Result;
 
 // Execute an operation that succeeds
-$successTry = Result::try(function (): string {
+$result = Result::attempt(function (): string {
     return 'Hello!';
 });
 
 // Check if it's a Success
-$isSuccess = $successTry->isSuccess(); // true
+$isSuccess = $result->isSuccess(); // true
 
 // Get the value from the successful operation
-$value = $successTry->getValue(); // "Hello!"
+$value = $result->getValue(); // "Hello!"
 ```
 
 ## Failed Operation
 
 ```php
 // Execute an operation that throws an exception
-$failureTry = Result::try(function (): never {
+$result = Result::attempt(function (): never {
     throw new RuntimeException('Boom! Something went wrong.');
 });
 
 // Check if it's a Failure
-$isFailure = $failureTry->isFailure(); // true
+$isFailure = $result->isFailure(); // true
 
 // Get the error message from the exception
-$errorMessage = $failureTry->getError()->getMessage(); // "Boom! Something went wrong."
+$errorMessage = $result->getError()->getMessage(); // "Boom! Something went wrong."
 ```
 
-The `try` method automatically catches any exceptions thrown during the execution of the provided callback and converts them into a Failure result. This allows for a more functional approach to error handling without try-catch blocks scattered throughout your code.
+The `attempt()` method automatically catches any `Throwable` thrown during the execution of the callback and converts it into a `Failure`. This allows for a more functional approach to error handling without try-catch blocks scattered throughout your code.
+
+## Deprecated: try()
+
+`Result::try()` is an alias for `attempt()` kept for backwards compatibility. It will be removed in a future major version.
+
+```php
+// ❌ Deprecated — avoid in new code
+$result = Result::try(fn () => riskyOperation());
+
+// ✅ Preferred
+$result = Result::attempt(fn () => riskyOperation());
+```

@@ -49,18 +49,33 @@ abstract readonly class Result
      *
      * @template TNewValue
      *
-     * @param  callable(): TNewValue  $operation
+     * @param  callable(): TNewValue              $operation
+     * @param  array<class-string<Throwable>>     $only       Classes to catch. Empty = catch all Throwable.
      * @return self<TNewValue, Throwable>
      */
-    final public static function attempt(callable $operation): self
+    final public static function attempt(callable $operation, array $only = []): self
     {
         try {
             /** @var Success<TNewValue> */
             return self::success($operation());
         } catch (Throwable $e) {
-            /** @var Failure<Throwable> */
-            return self::failure($e);
+            if ($only === [] || self::isInstanceOfAny($e, $only)) {
+                /** @var Failure<Throwable> */
+                return self::failure($e);
+            }
+            throw $e;
         }
+    }
+
+    /** @param array<class-string<Throwable>> $classes */
+    private static function isInstanceOfAny(Throwable $e, array $classes): bool
+    {
+        foreach ($classes as $class) {
+            if ($e instanceof $class) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -112,14 +127,31 @@ abstract readonly class Result
     }
 
     /**
-     * Like zip() but accepts a plain array of Results.
+     * Processes all results and collects outcomes.
+     * All succeed  → Success<array<int, mixed>> with all values.
+     * Any fail     → Failure<array<int, mixed>> with ALL errors (not just the first).
+     *
+     * Use zip() instead if you want fail-fast (short-circuit on first failure).
      *
      * @param  array<array-key, self<mixed, mixed>>  $results
-     * @return self<array<int, mixed>, mixed>
+     * @return self<array<int, mixed>, array<int, mixed>>
      */
     final public static function collect(array $results): self
     {
-        return self::zip(...array_values($results));
+        $values = [];
+        $errors = [];
+
+        foreach (array_values($results) as $result) {
+            if ($result->isSuccess()) {
+                $values[] = $result->getValue();
+            } else {
+                $errors[] = $result->getError();
+            }
+        }
+
+        return $errors !== [] // @phpstan-ignore return.type
+            ? new Failure($errors)
+            : new Success($values);
     }
 
     /**

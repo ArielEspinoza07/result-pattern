@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+---
+
+## [2.2.0] - 2026-03-04
+
 ### Added
 - `attempt(callable, array $only = [])`: optional `$only` parameter to filter which exception
   types are caught; exceptions outside the list are re-thrown
@@ -96,7 +100,8 @@
 ### Changed
 - Enhanced type safety with strict type hints and `readonly` classes
 
-[Unreleased]: https://github.com/arielespinoza07/result-pattern/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/arielespinoza07/result-pattern/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/arielespinoza07/result-pattern/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/arielespinoza07/result-pattern/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/arielespinoza07/result-pattern/compare/v1.0.2...v2.0.0
 [1.0.2]: https://github.com/arielespinoza07/result-pattern/compare/v1.0.1...v1.0.2

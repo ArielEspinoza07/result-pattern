@@ -45,14 +45,14 @@ abstract readonly class Result
     }
 
     /**
-     * Executes an operation and catches exceptions such as Failure.
+     * Executes an operation and catches exceptions as Failure.
      *
      * @template TNewValue
      *
      * @param  callable(): TNewValue  $operation
      * @return self<TNewValue, Throwable>
      */
-    final public static function try(callable $operation): self
+    final public static function attempt(callable $operation): self
     {
         try {
             /** @var Success<TNewValue> */
@@ -61,6 +61,19 @@ abstract readonly class Result
             /** @var Failure<Throwable> */
             return self::failure($e);
         }
+    }
+
+    /**
+     * @deprecated Use attempt() instead. 'try' is a PHP reserved keyword that causes IDE friction.
+     *
+     * @template TNewValue
+     *
+     * @param  callable(): TNewValue  $operation
+     * @return self<TNewValue, Throwable>
+     */
+    final public static function try(callable $operation): self
+    {
+        return self::attempt($operation);
     }
 
     /**
@@ -91,6 +104,62 @@ abstract readonly class Result
         }
 
         return $this;
+    }
+
+    /**
+     * Returns the value if Success, or the given default if Failure.
+     *
+     * @template TDefault
+     *
+     * @param  TDefault  $default
+     * @return TValue|TDefault
+     */
+    final public function getValueOr(mixed $default): mixed
+    {
+        return $this->isSuccess() ? $this->getValue() : $default;
+    }
+
+    /**
+     * Returns the error if Failure, or the given default if Success.
+     *
+     * @template TDefault
+     *
+     * @param  TDefault  $default
+     * @return TError|TDefault
+     */
+    final public function getErrorOr(mixed $default): mixed
+    {
+        return $this->isFailure() ? $this->getError() : $default;
+    }
+
+    /**
+     * Transforms the error of a Failure. No-op on Success.
+     *
+     * @template TNewError
+     *
+     * @param  callable(TError): TNewError  $fn
+     * @return self<TValue, TNewError>
+     */
+    final public function mapError(callable $fn): self
+    {
+        return $this->isFailure()
+            ? new Failure($fn($this->getError()))
+            : $this;
+    }
+
+    /**
+     * Converts a Failure into a Success using a fallback callable. No-op on Success.
+     *
+     * @template TNewValue
+     *
+     * @param  callable(TError): TNewValue  $fn
+     * @return self<TValue|TNewValue, never>
+     */
+    final public function recover(callable $fn): self
+    {
+        return $this->isFailure() // @phpstan-ignore return.type
+            ? new Success($fn($this->getError()))
+            : $this;
     }
 
     /**

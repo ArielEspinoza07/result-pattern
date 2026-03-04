@@ -1,11 +1,9 @@
-includes:
-    - vendor/phpstan/phpstan-mockery/extension.neon
-
 parameters:
     level: max
 
     paths:
         - src
+        - tests
 
     stubFiles: []
 

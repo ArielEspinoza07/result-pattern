@@ -5,21 +5,13 @@ This document demonstrates how to use the `onSuccess` and `onFailure` methods of
 ## Setup
 
 ```php
-use ArielEspinoza07\ResultPattern\Enums\HttpResponseStatusCode;
 use ArielEspinoza07\ResultPattern\Result;
 
 // Create a Success result
-$success = Result::success([
-    'status' => HttpResponseStatusCode::OK->value,
-    'message' => HttpResponseStatusCode::OK->message(),
-    'data' => [],
-]);
+$success = Result::success(['status' => 200, 'message' => 'OK', 'data' => []]);
 
 // Create a Failure result
-$failure = Result::failure([
-    'status' => HttpResponseStatusCode::NotFound->value,
-    'message' => HttpResponseStatusCode::NotFound->message(),
-]);
+$failure = Result::failure(['status' => 404, 'message' => 'Not Found']);
 ```
 
 ## Using onSuccess

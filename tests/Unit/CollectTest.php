@@ -15,7 +15,18 @@ it('returns Success with array of values when all results succeed', function () 
         ->and($result->getValue())->toBe(['a', 'b', 'c']);
 });
 
-it('returns first Failure when any result fails', function () {
+it('returns Failure with ALL errors when multiple results fail', function () {
+    $result = Result::collect([ // @phpstan-ignore argument.type
+        Result::success('a'),
+        Result::failure('fail1'),
+        Result::failure('fail2'),
+    ]);
+
+    expect($result->isFailure())->toBeTrue()
+        ->and($result->getError())->toBe(['fail1', 'fail2']);
+});
+
+it('returns Failure with single error when one result fails', function () {
     $result = Result::collect([ // @phpstan-ignore argument.type
         Result::success('a'),
         Result::failure('fail'),
@@ -23,7 +34,7 @@ it('returns first Failure when any result fails', function () {
     ]);
 
     expect($result->isFailure())->toBeTrue()
-        ->and($result->getError())->toBe('fail');
+        ->and($result->getError())->toBe(['fail']);
 });
 
 it('returns Success with empty array for empty input', function () {
@@ -31,6 +42,18 @@ it('returns Success with empty array for empty input', function () {
 
     expect($result->isSuccess())->toBeTrue()
         ->and($result->getValue())->toBe([]);
+});
+
+it('preserves order of values and errors', function () {
+    $result = Result::collect([ // @phpstan-ignore argument.type
+        Result::success(1),
+        Result::failure('e1'),
+        Result::success(2),
+        Result::failure('e2'),
+    ]);
+
+    expect($result->isFailure())->toBeTrue()
+        ->and($result->getError())->toBe(['e1', 'e2']);
 });
 
 it('preserves values in order regardless of key', function () {

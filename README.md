@@ -17,19 +17,19 @@
 
 ---
 
-A modern and simple implementation of the Result pattern for handling operation outcomes or HTTP responses.
+A modern, immutable implementation of the Result pattern for PHP 8.3+.
 
-> **Requires [PHP 8.3+](https://php.net/releases/) **
+> **Requires [PHP 8.3+](https://php.net/releases/)**
 
 ---
+
 ## Features
 
-- 🛡️ Type-safe result handling with strict type hints
-- 🌐 Complete HTTP response status codes support (1xx to 5xx)
-- 🔒 Immutable objects using PHP 8.3+ readonly classes
-- 🎯 SOLID principles adherence
-- 🧩 Composable and extensible design
-- 📝 Comprehensive test suite with Pest PHP
+- Type-safe result handling with strict type hints and PHPStan level max
+- Immutable objects using PHP 8.3+ `readonly` classes
+- Fluent, chainable API: `map → flatMap → recover → fold`
+- Full generic type inference via `@template` annotations
+- Comprehensive test suite with Pest PHP and type coverage
 
 ---
 
@@ -37,8 +37,6 @@ A modern and simple implementation of the Result pattern for handling operation 
 
 ```
 src/
-├── Enums/
-│   └── HttpResponseStatusCode.php
 ├── Failure.php
 ├── Success.php
 └── Result.php
@@ -54,27 +52,82 @@ composer require arielespinoza07/result-pattern
 
 ---
 
-## Documentation
+## Quick Start
 
-The following documentation files provide examples and usage patterns for the Result pattern:
+```php
+use ArielEspinoza07\ResultPattern\Result;
 
-- [Basic Success and Failure Examples](docs/basic-examples.md) - Creating and using Success and Failure objects
-- [Try Method Examples](docs/try-method-examples.md) - Using the `try` method to handle operations that might throw exceptions
-- [onSuccess and onFailure Examples](docs/on-success-failure-examples.md) - Using callbacks for Success and Failure cases
-- [Map Method Examples](docs/map-method-examples.md) - Transforming values inside Success results
-- [FlatMap Method Examples](docs/flat-map-method-examples.md) - Transforming Success results into new Result objects
-- [Fold Method Examples](docs/fold-method-examples.md) - Handling both Success and Failure cases with a single return value
-- [Error Handling Examples](docs/error-handling-examples.md) - Proper error handling techniques and best practices
-- [HTTP Response Code Available](docs/http-response-code.md)
+// Create results
+$ok  = Result::success(42);
+$err = Result::failure('something went wrong');
+
+// Wrap a throwing operation
+$result = Result::attempt(fn () => riskyOperation());
+
+// Convert nullable to Result
+$result = Result::fromNullable($user, new UserNotFoundException());
+
+// Transform and compose
+$value = Result::success(2)
+    ->map(fn ($x) => $x * 10)
+    ->flatMap(fn ($x) => Result::success($x + 5))
+    ->getValueOr(0); // 25
+
+// Handle both branches
+$output = $result->fold(
+    onSuccess: fn ($v) => "Got: {$v}",
+    onFailure: fn ($e) => "Error: {$e}",
+);
+```
+
 ---
 
-## Available Response Codes
+## API Reference
 
-- Informational Responses (1xx)
-- Success Responses (2xx)
-- Redirection Responses (3xx)
-- Client Error Responses (4xx)
-- Server Error Responses (5xx)
+### Static constructors
+
+| Method | Description |
+|--------|-------------|
+| `Result::success($value)` | Wraps a value in a `Success` |
+| `Result::failure($error)` | Wraps an error in a `Failure` |
+| `Result::attempt(callable)` | Executes a callable; catches `Throwable` as `Failure` |
+| `Result::fromNullable($value, $error)` | `null` → `Failure($error)`, non-null → `Success($value)` |
+| `Result::zip(Result ...$results)` | All succeed → `Success([values])`, first failure wins |
+| `Result::collect(array $results)` | Like `zip` but accepts a plain array |
+
+### Instance methods
+
+| Method | Description |
+|--------|-------------|
+| `isSuccess()` | `true` if `Success` |
+| `isFailure()` | `true` if `Failure` |
+| `getValue()` | Returns value (throws on `Failure`) — prefer `getValueOr()` |
+| `getError()` | Returns error (throws on `Success`) — prefer `getErrorOr()` |
+| `getValueOr($default)` | Safe value access with fallback |
+| `getErrorOr($default)` | Safe error access with fallback |
+| `toNullable()` | `Success($v)` → `$v`, `Failure` → `null` |
+| `map(callable)` | Transform the value; no-op on `Failure` |
+| `mapError(callable)` | Transform the error; no-op on `Success` |
+| `flatMap(callable)` | Chain a `Result`-returning callable on `Success` |
+| `flatMapError(callable)` | Chain a `Result`-returning callable on `Failure` |
+| `recover(callable)` | Convert `Failure` → `Success` via fallback value |
+| `recoverWith(callable)` | Convert `Failure` → `Result` (recovery can itself fail) |
+| `tap(callable)` | Run a side-effect on `Success` without modifying the result |
+| `onSuccess(callable)` | Run a side-effect on `Success` |
+| `onFailure(callable)` | Run a side-effect on `Failure` |
+| `fold(onSuccess, onFailure)` | Collapse both branches into a single value |
+
+---
+
+## Documentation
+
+- [Basic Success and Failure Examples](docs/basic-examples.md)
+- [attempt() / try() Method Examples](docs/try-method-examples.md)
+- [onSuccess and onFailure Examples](docs/on-success-failure-examples.md)
+- [Map Method Examples](docs/map-method-examples.md)
+- [FlatMap Method Examples](docs/flat-map-method-examples.md)
+- [Fold Method Examples](docs/fold-method-examples.md)
+- [Error Handling Examples](docs/error-handling-examples.md)
 
 ---
 
@@ -85,91 +138,25 @@ The following documentation files provide examples and usage patterns for the Re
 - PHP 8.3+
 - Composer 2.0+
 
-### Installation
-```bash
-composer require arielespinoza07/result-pattern
-```
+### Setup
 
-### Development Installation
 ```bash
-git https://github.com/ArielEspinoza07/result-pattern.git
+git clone https://github.com/ArielEspinoza07/result-pattern.git
 cd result-pattern
 composer install
 ```
 
----
-
 ### Quality Tools
 
-This package uses several tools to ensure code quality:
-
 ```bash
-# Run all checks
-composer test
-
-# Run specific checks
-composer test:lint     # Check code style
-composer test:types    # Run static analysis
-composer test:unit     # Run unit tests
-composer test:coverage # Check test coverage
+composer check       # lint + analyse + test (all-in-one)
+composer lint        # check code style (Pint)
+composer lint:fix    # fix code style
+composer analyse     # static analysis (PHPStan level max)
+composer test        # run tests (Pest PHP)
+composer test:coverage # run tests with coverage report
 ```
 
----
-
-## Continuous Integration
-
-GitHub Actions automatically run the following checks on push and pull requests:
-
-- Static analysis with PHPStan (level max)
-- Unit tests with Pest PHP
-- Code style with Laravel Pint
-- Type coverage check
-- Typo check with Peck
-
----
-
-## Testing
-This package uses Pest PHP for testing. To run the tests:
-
-```bash
-composer test
-```
-
-To generate a coverage report:
-```bash
-composer test:coverage
-```
-
-The coverage report will be available in the `coverage` directory.
-
----
-
-## Development Tools
-This package uses several development tools: to ensure code quality and maintainability:
-
-### Code Quality Tools
-
-- **Pest PHP**: Modern Testing Framework with custom expectations
-  ```bash
-  composer test           # Run tests
-  composer test:coverage  # Run tests with coverage report
-  ```
-
-- **Laravel Pint**: PSR-12 Code Style Fixer
-  ```bash
-  composer pint      # Fix code style
-  composer pint:test # Check code style
-  ```
-
-- **PHPStan**: Static Analysis (Level 9)
-  ```bash
-  composer analyse   # Run static analysis
-  ```
-
-- **Rector**: PHP 8.3 Compatibility and Code Quality
-  ```bash
-  composer rector    # Run code quality checks
-  ```
 ---
 
 ## License

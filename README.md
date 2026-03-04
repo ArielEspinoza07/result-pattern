@@ -164,6 +164,12 @@ composer test:coverage # run tests with coverage report
 
 ---
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, code conventions, and PR guidelines.
+
+---
+
 ## License
 
 [MIT License](LICENSE)

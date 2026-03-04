@@ -77,6 +77,52 @@ abstract readonly class Result
     }
 
     /**
+     * Converts a nullable value to a Result. null becomes Failure($error), anything else becomes Success($value).
+     *
+     * @template T
+     * @template E
+     *
+     * @param  T|null  $value
+     * @param  E  $error
+     * @return self<T, E>
+     */
+    final public static function fromNullable(mixed $value, mixed $error): self
+    {
+        return $value !== null ? new Success($value) : new Failure($error);
+    }
+
+    /**
+     * Combines multiple Results into one. If all are Success, returns Success with an array of their values.
+     * If any is Failure, returns the first Failure encountered.
+     *
+     * @param  self<mixed, mixed>  ...$results
+     * @return self<array<int, mixed>, mixed>
+     */
+    final public static function zip(self ...$results): self
+    {
+        $values = [];
+        foreach ($results as $result) {
+            if ($result->isFailure()) {
+                return $result; // @phpstan-ignore return.type
+            }
+            $values[] = $result->getValue();
+        }
+
+        return new Success($values); // @phpstan-ignore return.type
+    }
+
+    /**
+     * Like zip() but accepts a plain array of Results.
+     *
+     * @param  array<array-key, self<mixed, mixed>>  $results
+     * @return self<array<int, mixed>, mixed>
+     */
+    final public static function collect(array $results): self
+    {
+        return self::zip(...array_values($results));
+    }
+
+    /**
      * Executes a callback if it is a Success.
      *
      * @param  callable(TValue): void  $fn
@@ -184,6 +230,58 @@ abstract readonly class Result
     final public function flatMap(callable $fn): self
     {
         return $this->isSuccess() ? $fn($this->getValue()) : $this;
+    }
+
+    /**
+     * Like flatMap() but operates on the error side. Transforms a Failure by returning a new Result.
+     * No-op on Success.
+     *
+     * @template TNewValue
+     * @template TNewError
+     *
+     * @param  callable(TError): self<TNewValue, TNewError>  $fn
+     * @return self<TValue|TNewValue, TNewError>
+     */
+    final public function flatMapError(callable $fn): self
+    {
+        return $this->isFailure() ? $fn($this->getError()) : $this; // @phpstan-ignore return.type
+    }
+
+    /**
+     * Like recover() but the recovery callable may itself return a Result (which can be Failure).
+     * No-op on Success.
+     *
+     * @template TNewValue
+     * @template TNewError
+     *
+     * @param  callable(TError): self<TNewValue, TNewError>  $fn
+     * @return self<TValue|TNewValue, TNewError>
+     */
+    final public function recoverWith(callable $fn): self
+    {
+        return $this->isFailure() ? $fn($this->getError()) : $this; // @phpstan-ignore return.type
+    }
+
+    /**
+     * Runs a side-effect callable on the value if Success, then returns $this unchanged.
+     * Alias of onSuccess() with a pipeline-friendly name.
+     *
+     * @param  callable(TValue): void  $fn
+     * @return self<TValue, TError>
+     */
+    final public function tap(callable $fn): self
+    {
+        return $this->onSuccess($fn);
+    }
+
+    /**
+     * Returns the value if Success, or null if Failure.
+     *
+     * @return TValue|null
+     */
+    final public function toNullable(): mixed
+    {
+        return $this->isSuccess() ? $this->getValue() : null;
     }
 
     /**

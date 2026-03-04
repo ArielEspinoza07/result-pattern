@@ -40,7 +40,7 @@ it('flatMaps to new success', function () {
 
 it('flatMaps to failure', function () {
     $result = Result::success(2)
-                    ->flatMap(function (int $x): Result {
+                    ->flatMap(function (int $x): Result { // @phpstan-ignore argument.type
                         return Result::failure('Mapped error');
                     });
 

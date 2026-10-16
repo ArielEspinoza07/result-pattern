@@ -5,13 +5,13 @@ This document demonstrates how to use the `map` method of the Result pattern to 
 ## Setup
 
 ```php
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
 // Create a Success result
-$success = Result::success(['status' => 200, 'message' => 'OK', 'data' => []]);
+$success = Results::success(['status' => 200, 'message' => 'OK', 'data' => []]);
 
 // Create a Failure result
-$failure = Result::failure(['status' => 404, 'message' => 'Not Found']);
+$failure = Results::failure(['status' => 404, 'message' => 'Not Found']);
 ```
 
 ## Mapping Success Results

@@ -4,177 +4,55 @@ declare(strict_types=1);
 
 namespace ArielEspinoza07\ResultPattern;
 
-use Throwable;
+use ArielEspinoza07\ResultPattern\Exceptions\InvalidResultAccessException;
 
 /**
- * @template TValue
- * @template TError
+ * The outcome of an operation: either a Success holding a value or a Failure holding an error.
+ *
+ * Create instances through {@see Results}.
+ *
+ * @template-covariant TValue
+ * @template-covariant TError
+ *
+ * @phpstan-sealed Success|Failure
  */
 abstract readonly class Result
 {
+    /**
+     * @phpstan-assert-if-true Success<TValue> $this
+     * @phpstan-assert-if-false Failure<TError> $this
+     */
     abstract public function isSuccess(): bool;
 
+    /**
+     * @phpstan-assert-if-true Failure<TError> $this
+     * @phpstan-assert-if-false Success<TValue> $this
+     */
     abstract public function isFailure(): bool;
 
-    /** @return TValue */
+    /**
+     * Returns the value. Prefer getValueOr() or fold() unless the result is known to be a Success.
+     *
+     * @return TValue
+     *
+     * @throws InvalidResultAccessException when called on a Failure
+     */
     abstract public function getValue(): mixed;
 
-    /** @return TError */
+    /**
+     * Returns the error. Prefer getErrorOr() or fold() unless the result is known to be a Failure.
+     *
+     * @return TError
+     *
+     * @throws InvalidResultAccessException when called on a Success
+     */
     abstract public function getError(): mixed;
 
     /**
-     * @template T
-     *
-     * @param  T  $value
-     * @return self<T, never>
-     */
-    final public static function success(mixed $value): self
-    {
-        return new Success($value);
-    }
-
-    /**
-     * @template E
-     *
-     * @param  E  $error
-     * @return self<never, E>
-     */
-    final public static function failure(mixed $error): self
-    {
-        return new Failure($error);
-    }
-
-    /**
-     * Executes an operation and catches exceptions as Failure.
-     *
-     * @template TNewValue
-     *
-     * @param  callable(): TNewValue              $operation
-     * @param  array<class-string<Throwable>>     $only       Classes to catch. Empty = catch all Throwable.
-     * @return self<TNewValue, Throwable>
-     */
-    final public static function attempt(callable $operation, array $only = []): self
-    {
-        try {
-            /** @var Success<TNewValue> */
-            return self::success($operation());
-        } catch (Throwable $e) {
-            if ($only === [] || self::isInstanceOfAny($e, $only)) {
-                /** @var Failure<Throwable> */
-                return self::failure($e);
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * @deprecated Use attempt() instead. 'try' is a PHP reserved keyword that causes IDE friction.
-     *
-     * @template TNewValue
-     *
-     * @param  callable(): TNewValue  $operation
-     * @return self<TNewValue, Throwable>
-     */
-    final public static function try(callable $operation): self
-    {
-        return self::attempt($operation);
-    }
-
-    /**
-     * Converts a nullable value to a Result. null becomes Failure($error), anything else becomes Success($value).
-     *
-     * @template T
-     * @template E
-     *
-     * @param  T|null  $value
-     * @param  E  $error
-     * @return self<T, E>
-     */
-    final public static function fromNullable(mixed $value, mixed $error): self
-    {
-        return $value !== null ? new Success($value) : new Failure($error);
-    }
-
-    /**
-     * Combines multiple Results into one. If all are Success, returns Success with an array of their values.
-     * If any is Failure, returns the first Failure encountered.
-     *
-     * @param  self<mixed, mixed>  ...$results
-     * @return self<array<int, mixed>, mixed>
-     */
-    final public static function zip(self ...$results): self
-    {
-        $values = [];
-        foreach ($results as $result) {
-            if ($result->isFailure()) {
-                return $result; // @phpstan-ignore return.type
-            }
-            $values[] = $result->getValue();
-        }
-
-        return new Success($values); // @phpstan-ignore return.type
-    }
-
-    /**
-     * Processes all results and collects outcomes.
-     * All succeed  → Success<array<int, mixed>> with all values.
-     * Any fail     → Failure<array<int, mixed>> with ALL errors (not just the first).
-     *
-     * Use zip() instead if you want fail-fast (short-circuit on first failure).
-     *
-     * @param  array<array-key, self<mixed, mixed>>  $results
-     * @return self<array<int, mixed>, array<int, mixed>>
-     */
-    final public static function collect(array $results): self
-    {
-        $values = [];
-        $errors = [];
-
-        foreach (array_values($results) as $result) {
-            if ($result->isSuccess()) {
-                $values[] = $result->getValue();
-            } else {
-                $errors[] = $result->getError();
-            }
-        }
-
-        return $errors !== [] // @phpstan-ignore return.type
-            ? new Failure($errors)
-            : new Success($values);
-    }
-
-    /**
-     * Executes a callback if it is a Success.
-     *
-     * @param  callable(TValue): void  $fn
-     * @return self<TValue, TError>
-     */
-    final public function onSuccess(callable $fn): self
-    {
-        if ($this->isSuccess()) {
-            $fn($this->getValue());
-        }
-
-        return $this;
-    }
-
-    /**
-     * Executes a callback if it is Failure.
-     *
-     * @param  callable(TError): void  $fn
-     * @return self<TValue, TError>
-     */
-    final public function onFailure(callable $fn): self
-    {
-        if ($this->isFailure()) {
-            $fn($this->getError());
-        }
-
-        return $this;
-    }
-
-    /**
      * Returns the value if Success, or the given default if Failure.
+     *
+     * The default is evaluated before the call. For a default that is costly to compute,
+     * use recover(fn ($error) => ...)->getValue() so it only runs on Failure.
      *
      * @template TDefault
      *
@@ -200,40 +78,42 @@ abstract readonly class Result
     }
 
     /**
-     * Transforms the error of a Failure. No-op on Success.
+     * Runs a side effect with the value if Success. The callback's return value is ignored.
      *
-     * @template TNewError
-     *
-     * @param  callable(TError): TNewError  $fn
-     * @return self<TValue, TNewError>
+     * @param  callable(TValue): mixed  $fn
+     * @return static
      */
-    final public function mapError(callable $fn): self
+    final public function onSuccess(callable $fn): static
     {
-        return $this->isFailure()
-            ? new Failure($fn($this->getError()))
-            : $this;
+        if ($this->isSuccess()) {
+            $fn($this->getValue());
+        }
+
+        return $this;
     }
 
     /**
-     * Converts a Failure into a Success using a fallback callable. No-op on Success.
+     * Runs a side effect with the error if Failure. The callback's return value is ignored.
      *
-     * @template TNewValue
-     *
-     * @param  callable(TError): TNewValue  $fn
-     * @return self<TValue|TNewValue, never>
+     * @param  callable(TError): mixed  $fn
+     * @return static
      */
-    final public function recover(callable $fn): self
+    final public function onFailure(callable $fn): static
     {
-        return $this->isFailure() // @phpstan-ignore return.type
-            ? new Success($fn($this->getError()))
-            : $this;
+        if ($this->isFailure()) {
+            $fn($this->getError());
+        }
+
+        return $this;
     }
 
     /**
+     * Transforms the value of a Success. No-op on Failure.
+     *
      * @template TNewValue
      *
      * @param  callable(TValue): TNewValue  $fn
-     * @return self<TNewValue, TError>
+     * @return Result<TNewValue, TError>
      */
     final public function map(callable $fn): self
     {
@@ -243,69 +123,72 @@ abstract readonly class Result
     }
 
     /**
-     * @template TNewValue
+     * Transforms the error of a Failure. No-op on Success.
      *
-     * @param  callable(TValue): self<TNewValue, TError>  $fn
-     * @return self<TNewValue, TError>
+     * @template TNewError
+     *
+     * @param  callable(TError): TNewError  $fn
+     * @return Result<TValue, TNewError>
+     */
+    final public function mapError(callable $fn): self
+    {
+        return $this->isFailure()
+            ? new Failure($fn($this->getError()))
+            : $this;
+    }
+
+    /**
+     * Chains an operation that can fail. No-op on Failure.
+     *
+     * The error type widens to include the errors the next step can produce.
+     *
+     * @template TNewValue
+     * @template TNewError
+     *
+     * @param  callable(TValue): Result<TNewValue, TNewError>  $fn
+     * @return Result<TNewValue, TError|TNewError>
      */
     final public function flatMap(callable $fn): self
     {
-        return $this->isSuccess() ? $fn($this->getValue()) : $this;
+        return $this->isSuccess()
+            ? $fn($this->getValue())
+            : $this;
     }
 
     /**
-     * Like flatMap() but operates on the error side. Transforms a Failure by returning a new Result.
-     * No-op on Success.
+     * Converts a Failure into a Success using a fallback. No-op on Success.
      *
      * @template TNewValue
-     * @template TNewError
      *
-     * @param  callable(TError): self<TNewValue, TNewError>  $fn
-     * @return self<TValue|TNewValue, TNewError>
+     * @param  callable(TError): TNewValue  $fn
+     * @return Success<TValue|TNewValue>
      */
-    final public function flatMapError(callable $fn): self
+    final public function recover(callable $fn): Success
     {
-        return $this->isFailure() ? $fn($this->getError()) : $this; // @phpstan-ignore return.type
+        return $this->isFailure()
+            ? new Success($fn($this->getError()))
+            : $this;
     }
 
     /**
-     * Like recover() but the recovery callable may itself return a Result (which can be Failure).
-     * No-op on Success.
+     * Attempts to recover from a Failure with an operation that can itself fail. No-op on Success.
      *
      * @template TNewValue
      * @template TNewError
      *
-     * @param  callable(TError): self<TNewValue, TNewError>  $fn
-     * @return self<TValue|TNewValue, TNewError>
+     * @param  callable(TError): Result<TNewValue, TNewError>  $fn
+     * @return Result<TValue|TNewValue, TNewError>
      */
     final public function recoverWith(callable $fn): self
     {
-        return $this->isFailure() ? $fn($this->getError()) : $this; // @phpstan-ignore return.type
+        return $this->isFailure()
+            ? $fn($this->getError())
+            : $this;
     }
 
     /**
-     * Runs a side-effect callable on the value if Success, then returns $this unchanged.
-     * Alias of onSuccess() with a pipeline-friendly name.
+     * Collapses both branches into a single value.
      *
-     * @param  callable(TValue): void  $fn
-     * @return self<TValue, TError>
-     */
-    final public function tap(callable $fn): self
-    {
-        return $this->onSuccess($fn);
-    }
-
-    /**
-     * Returns the value if Success, or null if Failure.
-     *
-     * @return TValue|null
-     */
-    final public function toNullable(): mixed
-    {
-        return $this->isSuccess() ? $this->getValue() : null;
-    }
-
-    /**
      * @template TOutput
      *
      * @param  callable(TValue): TOutput  $onSuccess
@@ -317,16 +200,5 @@ abstract readonly class Result
         return $this->isSuccess()
             ? $onSuccess($this->getValue())
             : $onFailure($this->getError());
-    }
-
-    /** @param array<class-string<Throwable>> $classes */
-    private static function isInstanceOfAny(Throwable $e, array $classes): bool
-    {
-        foreach ($classes as $class) {
-            if ($e instanceof $class) {
-                return true;
-            }
-        }
-        return false;
     }
 }

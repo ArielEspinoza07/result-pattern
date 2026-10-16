@@ -5,38 +5,50 @@ This document demonstrates how exceptions are thrown when trying to access inval
 ## Setup
 
 ```php
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
 // Create a Success result
-$success = Result::success(['status' => 200, 'message' => 'OK', 'data' => []]);
+$success = Results::success(['status' => 200, 'message' => 'OK', 'data' => []]);
 
 // Create a Failure result
-$failure = Result::failure(['status' => 404, 'message' => 'Not Found']);
+$failure = Results::failure(['status' => 404, 'message' => 'Not Found']);
 ```
 
 ## Accessing Value on Failure
 
-When you try to access the value of a Failure result using `getValue()`, a `RuntimeException` is thrown:
+When you try to access the value of a Failure result using `getValue()`, an `InvalidResultAccessException` is thrown.
+It extends `LogicException`, because reading a side that does not exist is a programming error, not a runtime condition:
 
 ```php
+use ArielEspinoza07\ResultPattern\Exceptions\InvalidResultAccessException;
+
 try {
     $failure->getValue();
-} catch (RuntimeException $e) {
-    // This will catch: "No value in Failure"
-    echo 'Caught exception: ' . $e->getMessage();
+} catch (InvalidResultAccessException $e) {
+    echo $e->getMessage(); // "Cannot get the value of a Failure (error type: array)."
 }
+```
+
+If the Failure's error is itself a `Throwable`, it is attached as the previous exception, so the original
+message and stack trace show up in your logs:
+
+```php
+$failure = Results::attempt(fn () => $db->query('...')); // throws PDOException
+
+$failure->getValue();
+// InvalidResultAccessException: Cannot get the value of a Failure (error type: PDOException).
+// Caused by: PDOException: SQLSTATE[HY000] ...
 ```
 
 ## Accessing Error on Success
 
-Similarly, when you try to access the error of a Success result using `getError()`, a `RuntimeException` is thrown:
+Similarly, when you try to access the error of a Success result using `getError()`, an `InvalidResultAccessException` is thrown:
 
 ```php
 try {
     $success->getError();
-} catch (RuntimeException $e) {
-    // This will catch: "No error in Success"
-    echo 'Caught exception: ' . $e->getMessage();
+} catch (InvalidResultAccessException $e) {
+    echo $e->getMessage(); // "Cannot get the error of a Success (value type: array)."
 }
 ```
 

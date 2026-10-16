@@ -8,8 +8,9 @@ This document demonstrates how to convert a `Failure` back into a `Success` usin
 
 ```php
 use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
-$result = Result::failure('something went wrong')
+$result = Results::failure('something went wrong')
     ->recover(fn ($error) => 'default value');
 
 $result->isSuccess(); // true
@@ -19,7 +20,7 @@ $result->getValue();  // 'default value'
 ### No-op on Success
 
 ```php
-$result = Result::success(42)
+$result = Results::success(42)
     ->recover(fn ($error) => 0);
 
 $result->getValue(); // 42 — the callable is never invoked
@@ -30,8 +31,8 @@ $result->getValue(); // 42 — the callable is never invoked
 `recoverWith()` is like `recover()` but the callable must return a `Result`. This allows the recovery itself to fail.
 
 ```php
-$result = Result::failure('primary source unavailable')
-    ->recoverWith(fn ($error) => Result::success('value from fallback source'));
+$result = Results::failure('primary source unavailable')
+    ->recoverWith(fn ($error) => Results::success('value from fallback source'));
 
 $result->isSuccess(); // true
 $result->getValue();  // 'value from fallback source'
@@ -40,8 +41,8 @@ $result->getValue();  // 'value from fallback source'
 ### Recovery that itself fails
 
 ```php
-$result = Result::failure('primary source unavailable')
-    ->recoverWith(fn ($error) => Result::failure('fallback source also unavailable'));
+$result = Results::failure('primary source unavailable')
+    ->recoverWith(fn ($error) => Results::failure('fallback source also unavailable'));
 
 $result->isFailure(); // true
 $result->getError();  // 'fallback source also unavailable'
@@ -52,12 +53,12 @@ $result->getError();  // 'fallback source also unavailable'
 ```php
 function fetchFromPrimary(int $id): Result
 {
-    return Result::attempt(fn () => primaryDb()->find($id));
+    return Results::attempt(fn () => primaryDb()->find($id));
 }
 
 function fetchFromReplica(int $id): Result
 {
-    return Result::attempt(fn () => replicaDb()->find($id));
+    return Results::attempt(fn () => replicaDb()->find($id));
 }
 
 $user = fetchFromPrimary(42)

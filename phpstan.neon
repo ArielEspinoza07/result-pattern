@@ -5,9 +5,4 @@ parameters:
         - src
         - tests
 
-    stubFiles: []
-
-    reportUnmatchedIgnoredErrors: false
-
-    ignoreErrors:
-        - message: '#.*PHPUnit.*TestCase.*#'
+    reportUnmatchedIgnoredErrors: true

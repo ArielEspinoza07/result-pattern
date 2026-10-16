@@ -5,13 +5,13 @@ This document demonstrates how to use the `flatMap` method of the Result pattern
 ## Setup
 
 ```php
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
 // Create a Success result
-$success = Result::success(['status' => 200, 'message' => 'OK', 'data' => []]);
+$success = Results::success(['status' => 200, 'message' => 'OK', 'data' => []]);
 
 // Create a Failure result
-$failure = Result::failure(['status' => 404, 'message' => 'Not Found']);
+$failure = Results::failure(['status' => 404, 'message' => 'Not Found']);
 ```
 
 ## FlatMapping Success to Success
@@ -22,7 +22,7 @@ The `flatMap` method allows you to transform a Success result into another Resul
 // Transform Success into another Success
 $flatMappedSuccess = $success->flatMap(function ($value) {
     $value['data'] = ['flatMapped' => true];
-    return Result::success($value);
+    return Results::success($value);
 });
 
 // Original success value remains unchanged:
@@ -49,7 +49,7 @@ You can also use `flatMap` to convert a Success result into a Failure result:
 ```php
 // Transform Success into a Failure
 $flatMappedToFailure = $success->flatMap(function ($value) {
-    return Result::failure('Converted to failure');
+    return Results::failure('Converted to failure');
 });
 
 // The result is now a Failure with the specified error:
@@ -63,7 +63,7 @@ When you call `flatMap` on a Failure result, the transformation function is not 
 ```php
 // Try to transform a Failure result
 $flatMappedFailure = $failure->flatMap(function ($value) {
-    return Result::success('This will not be executed');
+    return Results::success('This will not be executed');
 });
 
 // Original failure error:

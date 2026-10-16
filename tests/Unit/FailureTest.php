@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
+use ArielEspinoza07\ResultPattern\Exceptions\InvalidResultAccessException;
 use ArielEspinoza07\ResultPattern\Failure;
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
 it('creates failure result', function () {
-    $result = Result::failure('error message');
+    $result = Results::failure('error message');
 
     expect($result)
         ->toBeInstanceOf(Failure::class)
@@ -19,28 +20,28 @@ it('creates failure result', function () {
 });
 
 it('throws when getting value from failure', function () {
-    $result = Result::failure('error');
+    $result = Results::failure('error');
 
-    expect(fn () => $result->getValue())->toThrow(RuntimeException::class);
+    expect(fn () => $result->getValue())->toThrow(InvalidResultAccessException::class);
 });
 
 it('ignores map', function () {
-    $original = Result::failure('original error');
+    $original = Results::failure('original error');
     $result = $original->map(fn ($x) => $x * 3);
 
     expect($result)->toBe($original);
 });
 
 it('ignores flatMap', function () {
-    $original = Result::failure('original error');
-    $result = $original->flatMap(fn ($x) => Result::success(42));
+    $original = Results::failure('original error');
+    $result = $original->flatMap(fn ($x) => Results::success(42));
 
     expect($result)->toBe($original);
 });
 
 it('executes onFailure callback', function () {
     $called = false;
-    Result::failure('test error')
+    Results::failure('test error')
         ->onFailure(function (string $error) use (&$called) {
             $called = true;
             expect($error)->toBe('test error');
@@ -50,11 +51,44 @@ it('executes onFailure callback', function () {
 });
 
 it('folds failure correctly', function () {
-    $value = Result::failure('error')
+    $value = Results::failure('error')
         ->fold(
             onSuccess: fn ($x) => $x * 2,
             onFailure: fn (string $e): int => 0
         );
 
     expect($value)->toBe(0);
+});
+
+it('names the error type when getting the value', function () {
+    expect(fn () => Results::failure('boom')->getValue())
+        ->toThrow(InvalidResultAccessException::class, 'Cannot get the value of a Failure (error type: string).');
+});
+
+it('chains a Throwable error as the previous exception', function () {
+    $cause = new RuntimeException('database is down');
+
+    $thrown = null;
+
+    try {
+        Results::failure($cause)->getValue();
+    } catch (InvalidResultAccessException $e) {
+        $thrown = $e;
+    }
+
+    expect($thrown)->toBeInstanceOf(InvalidResultAccessException::class)
+        ->and($thrown->getPrevious())->toBe($cause);
+});
+
+it('has no previous exception when the error is not a Throwable', function () {
+    $thrown = null;
+
+    try {
+        Results::failure('boom')->getValue();
+    } catch (InvalidResultAccessException $e) {
+        $thrown = $e;
+    }
+
+    expect($thrown)->toBeInstanceOf(InvalidResultAccessException::class)
+        ->and($thrown->getPrevious())->toBeNull();
 });

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 use ArielEspinoza07\ResultPattern\Success;
 
 it('converts failure to success using fallback', function () {
-    $result = Result::failure('error')
+    $result = Results::failure('error')
         ->recover(fn (string $e): int => 0);
 
     expect($result->isSuccess())->toBeTrue()
@@ -14,7 +14,7 @@ it('converts failure to success using fallback', function () {
 });
 
 it('is a no-op on success', function () {
-    $original = Result::success(42);
+    $original = Results::success(42);
     $result = $original->recover(fn ($e): int => 0);
 
     expect($result)->toBe($original)
@@ -22,7 +22,7 @@ it('is a no-op on success', function () {
 });
 
 it('returns a Success instance after recovering', function () {
-    $result = Result::failure('any error')
+    $result = Results::failure('any error')
         ->recover(fn (string $e): string => 'recovered');
 
     expect($result)->toBeInstanceOf(Success::class)

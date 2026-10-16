@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
 it('returns Success with array of values when all results succeed', function () {
-    $result = Result::collect([ // @phpstan-ignore argument.type
-        Result::success('a'),
-        Result::success('b'),
-        Result::success('c'),
+    $result = Results::collect([
+        Results::success('a'),
+        Results::success('b'),
+        Results::success('c'),
     ]);
 
     expect($result->isSuccess())->toBeTrue()
@@ -16,52 +16,65 @@ it('returns Success with array of values when all results succeed', function () 
 });
 
 it('returns Failure with ALL errors when multiple results fail', function () {
-    $result = Result::collect([ // @phpstan-ignore argument.type
-        Result::success('a'),
-        Result::failure('fail1'),
-        Result::failure('fail2'),
+    $result = Results::collect([
+        Results::success('a'),
+        Results::failure('fail1'),
+        Results::failure('fail2'),
     ]);
 
     expect($result->isFailure())->toBeTrue()
-        ->and($result->getError())->toBe(['fail1', 'fail2']);
+        ->and($result->getError())->toBe([1 => 'fail1', 2 => 'fail2']);
 });
 
 it('returns Failure with single error when one result fails', function () {
-    $result = Result::collect([ // @phpstan-ignore argument.type
-        Result::success('a'),
-        Result::failure('fail'),
-        Result::success('c'),
+    $result = Results::collect([
+        Results::success('a'),
+        Results::failure('fail'),
+        Results::success('c'),
     ]);
 
     expect($result->isFailure())->toBeTrue()
-        ->and($result->getError())->toBe(['fail']);
+        ->and($result->getError())->toBe([1 => 'fail']);
 });
 
 it('returns Success with empty array for empty input', function () {
-    $result = Result::collect([]);
+    $result = Results::collect([]);
 
     expect($result->isSuccess())->toBeTrue()
         ->and($result->getValue())->toBe([]);
 });
 
-it('preserves order of values and errors', function () {
-    $result = Result::collect([ // @phpstan-ignore argument.type
-        Result::success(1),
-        Result::failure('e1'),
-        Result::success(2),
-        Result::failure('e2'),
+it('keeps each error at the index of the result that produced it', function () {
+    $result = Results::collect([
+        Results::success(1),
+        Results::failure('e1'),
+        Results::success(2),
+        Results::failure('e2'),
     ]);
 
     expect($result->isFailure())->toBeTrue()
-        ->and($result->getError())->toBe(['e1', 'e2']);
+        ->and($result->getError())->toBe([1 => 'e1', 3 => 'e2']);
 });
 
-it('preserves values in order regardless of key', function () {
-    $result = Result::collect([ // @phpstan-ignore argument.type
-        'a' => Result::success(1),
-        'b' => Result::success(2),
+it('preserves string keys of successful values', function () {
+    $result = Results::collect([
+        'a' => Results::success(1),
+        'b' => Results::success(2),
     ]);
 
     expect($result->isSuccess())->toBeTrue()
-        ->and($result->getValue())->toBe([1, 2]);
+        ->and($result->getValue())->toBe(['a' => 1, 'b' => 2]);
+});
+
+it('traces each validation error back to its field', function () {
+    $result = Results::collect([
+        'name' => Results::success('Ariel'),
+        'email' => Results::failure('must be a valid email'),
+        'age' => Results::failure('must be at least 18'),
+    ]);
+
+    expect($result->getError())->toBe([
+        'email' => 'must be a valid email',
+        'age' => 'must be at least 18',
+    ]);
 });

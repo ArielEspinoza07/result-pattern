@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
 it('returns success for successful operation', function () {
-    $result = Result::attempt(fn (): int => 42);
+    $result = Results::attempt(fn (): int => 42);
 
     expect($result->isSuccess())->toBeTrue()
         ->and($result->getValue())->toBe(42);
@@ -13,7 +13,7 @@ it('returns success for successful operation', function () {
 
 it('returns failure for throwing operation', function () {
     $exception = new RuntimeException('attempt error');
-    $result = Result::attempt(function () use ($exception): void {
+    $result = Results::attempt(function () use ($exception): void {
         throw $exception;
     });
 
@@ -22,7 +22,7 @@ it('returns failure for throwing operation', function () {
 });
 
 it('captures TypeError', function () {
-    $result = Result::attempt(function (): int {
+    $result = Results::attempt(function (): int {
         throw new TypeError('type mismatch');
     });
 
@@ -31,7 +31,7 @@ it('captures TypeError', function () {
 });
 
 it('captures ValueError', function () {
-    $result = Result::attempt(function (): int {
+    $result = Results::attempt(function (): int {
         throw new ValueError('value error');
     });
 
@@ -40,7 +40,7 @@ it('captures ValueError', function () {
 });
 
 it('re-throws exception not in $only list', function () {
-    expect(fn () => Result::attempt(
+    expect(fn () => Results::attempt(
         fn () => throw new RuntimeException('oops'),
         [InvalidArgumentException::class]
     ))->toThrow(RuntimeException::class);
@@ -48,7 +48,7 @@ it('re-throws exception not in $only list', function () {
 
 it('catches exception that matches $only exactly', function () {
     $e = new RuntimeException('boom');
-    $result = Result::attempt(fn () => throw $e, [RuntimeException::class]);
+    $result = Results::attempt(fn () => throw $e, [RuntimeException::class]);
 
     expect($result->isFailure())->toBeTrue()
         ->and($result->getError())->toBe($e);
@@ -57,7 +57,7 @@ it('catches exception that matches $only exactly', function () {
 it('catches subclass of exception in $only', function () {
     // InvalidArgumentException extends LogicException
     $e = new InvalidArgumentException('bad arg');
-    $result = Result::attempt(fn () => throw $e, [LogicException::class]);
+    $result = Results::attempt(fn () => throw $e, [LogicException::class]);
 
     expect($result->isFailure())->toBeTrue()
         ->and($result->getError())->toBe($e);
@@ -65,7 +65,7 @@ it('catches subclass of exception in $only', function () {
 
 it('catches any of multiple classes in $only', function () {
     $e = new OverflowException('overflow');
-    $result = Result::attempt(
+    $result = Results::attempt(
         fn () => throw $e,
         [InvalidArgumentException::class, OverflowException::class]
     );
@@ -76,7 +76,7 @@ it('catches any of multiple classes in $only', function () {
 
 it('empty $only catches everything (backward compat)', function () {
     $e = new TypeError('type error');
-    $result = Result::attempt(fn () => throw $e);
+    $result = Results::attempt(fn () => throw $e);
 
     expect($result->isFailure())->toBeTrue()
         ->and($result->getError())->toBe($e);

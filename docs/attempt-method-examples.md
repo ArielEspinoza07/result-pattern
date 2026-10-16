@@ -1,16 +1,14 @@
-# attempt() / try() Method Examples
+# attempt() Method Examples
 
 This document demonstrates how to use `attempt()` to handle operations that might throw exceptions.
-
-> **Note:** `try()` is deprecated in favour of `attempt()`. The name `try` conflicts with a PHP reserved keyword and causes IDE friction. Use `attempt()` in all new code.
 
 ## Successful Operation
 
 ```php
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
 // Execute an operation that succeeds
-$result = Result::attempt(function (): string {
+$result = Results::attempt(function (): string {
     return 'Hello!';
 });
 
@@ -25,7 +23,7 @@ $value = $result->getValue(); // "Hello!"
 
 ```php
 // Execute an operation that throws an exception
-$result = Result::attempt(function (): never {
+$result = Results::attempt(function (): never {
     throw new RuntimeException('Boom! Something went wrong.');
 });
 
@@ -45,9 +43,9 @@ By default `attempt()` catches every `Throwable`. Pass an array of exception cla
 ### Catch a single exception type
 
 ```php
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
-$result = Result::attempt(
+$result = Results::attempt(
     fn () => riskyOperation(),
     [RuntimeException::class],
 );
@@ -59,7 +57,7 @@ $result = Result::attempt(
 ### Catch multiple exception types
 
 ```php
-$result = Result::attempt(
+$result = Results::attempt(
     fn () => riskyDatabaseOperation(),
     [IOException::class, DatabaseException::class],
 );
@@ -71,7 +69,7 @@ $result = Result::attempt(
 
 ```php
 try {
-    $result = Result::attempt(
+    $result = Results::attempt(
         function (): never {
             throw new \TypeError('wrong type');
         },
@@ -86,17 +84,6 @@ try {
 
 ```php
 // $only defaults to [], which means all Throwables are caught (backward-compatible).
-$result = Result::attempt(fn () => riskyOperation());
+$result = Results::attempt(fn () => riskyOperation());
 ```
 
-## Deprecated: try()
-
-`Result::try()` is an alias for `attempt()` kept for backwards compatibility. It will be removed in a future major version.
-
-```php
-// ❌ Deprecated — avoid in new code
-$result = Result::try(fn () => riskyOperation());
-
-// ✅ Preferred
-$result = Result::attempt(fn () => riskyOperation());
-```

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
 it('returns Success with array of values when all results succeed', function () {
-    $result = Result::zip(
-        Result::success(1), // @phpstan-ignore argument.type
-        Result::success(2), // @phpstan-ignore argument.type
-        Result::success(3), // @phpstan-ignore argument.type
+    $result = Results::zip(
+        Results::success(1),
+        Results::success(2),
+        Results::success(3),
     );
 
     expect($result->isSuccess())->toBeTrue()
@@ -16,10 +16,10 @@ it('returns Success with array of values when all results succeed', function () 
 });
 
 it('returns first Failure when any result fails', function () {
-    $result = Result::zip(
-        Result::success(1), // @phpstan-ignore argument.type
-        Result::failure('oops'), // @phpstan-ignore argument.type
-        Result::success(3), // @phpstan-ignore argument.type
+    $result = Results::zip(
+        Results::success(1),
+        Results::failure('oops'),
+        Results::success(3),
     );
 
     expect($result->isFailure())->toBeTrue()
@@ -27,9 +27,9 @@ it('returns first Failure when any result fails', function () {
 });
 
 it('returns first Failure when multiple results fail', function () {
-    $result = Result::zip(
-        Result::failure('first error'), // @phpstan-ignore argument.type
-        Result::failure('second error'), // @phpstan-ignore argument.type
+    $result = Results::zip(
+        Results::failure('first error'),
+        Results::failure('second error'),
     );
 
     expect($result->isFailure())->toBeTrue()
@@ -37,7 +37,7 @@ it('returns first Failure when multiple results fail', function () {
 });
 
 it('returns Success with empty array when no arguments given', function () {
-    $result = Result::zip();
+    $result = Results::zip();
 
     expect($result->isSuccess())->toBeTrue()
         ->and($result->getValue())->toBe([]);

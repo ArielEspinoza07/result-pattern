@@ -5,10 +5,10 @@ This document demonstrates how to create and use basic Success and Failure objec
 ## Creating a Success Result
 
 ```php
-use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
 
 // Create a Success result with some data
-$success = Result::success([
+$success = Results::success([
     'status' => 200,
     'message' => 'OK',
     'data' => [],
@@ -37,7 +37,7 @@ $isFailure = $success->isFailure(); // false
 
 ```php
 // Create a Failure result with an error
-$failure = Result::failure([
+$failure = Results::failure([
     'status' => 404,
     'message' => 'Not Found',
 ]);

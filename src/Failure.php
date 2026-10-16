@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace ArielEspinoza07\ResultPattern;
 
-use RuntimeException;
+use ArielEspinoza07\ResultPattern\Exceptions\InvalidResultAccessException;
 
 /**
- * @template TError
+ * @template-covariant TError
  * @extends Result<never, TError>
  */
 final readonly class Failure extends Result
@@ -25,10 +25,10 @@ final readonly class Failure extends Result
         return true;
     }
 
-    /** @throws RuntimeException */
-    public function getValue(): mixed
+    /** @throws InvalidResultAccessException */
+    public function getValue(): never
     {
-        throw new RuntimeException('No value in Failure');
+        throw InvalidResultAccessException::valueOfFailure($this->error);
     }
 
     /** @return TError */

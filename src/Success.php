@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace ArielEspinoza07\ResultPattern;
 
-use RuntimeException;
+use ArielEspinoza07\ResultPattern\Exceptions\InvalidResultAccessException;
 
 /**
- * @template TValue
+ * @template-covariant TValue
  * @extends Result<TValue, never>
  */
 final readonly class Success extends Result
@@ -31,9 +31,9 @@ final readonly class Success extends Result
         return $this->value;
     }
 
-    /** @throws RuntimeException */
-    public function getError(): mixed
+    /** @throws InvalidResultAccessException */
+    public function getError(): never
     {
-        throw new RuntimeException('No error in Success');
+        throw InvalidResultAccessException::errorOfSuccess($this->value);
     }
 }

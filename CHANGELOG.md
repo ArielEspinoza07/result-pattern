@@ -2,6 +2,35 @@
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-10-16
+
+### Breaking
+- Static constructors and combinators moved from `Result` to the new final class `Results`:
+  replace `Result::success|failure|attempt|fromNullable|zip|collect(...)` with `Results::…(...)`.
+  `Result` is now only the type: keep using it in type hints and `@return Result<T, E>` docblocks.
+- Removed `try()`: use `Results::attempt()`.
+- Removed `tap()`: use `onSuccess()`.
+- Removed `flatMapError()`: use `recoverWith()` (identical behavior).
+- Removed `toNullable()`: use `getValueOr(null)`.
+- `Results::success()` / `Results::failure()` now declare `Success<T>` / `Failure<E>` as their return types.
+- `getValue()` on a `Failure` and `getError()` on a `Success` throw
+  `Exceptions\InvalidResultAccessException` (extends `LogicException`) instead of `RuntimeException`.
+  Code that catches `RuntimeException` around these calls must catch the new exception instead.
+  When the Failure's error is a `Throwable`, it is attached as the previous exception.
+- `Results::collect()` preserves array keys on both sides. Errors stay at the key of the input that produced them
+  (`['email' => 'invalid']`), and list input yields errors at their original index (`[1 => 'e1', 3 => 'e2']`)
+  instead of being renumbered.
+
+### Changed
+- Generic templates are covariant, so `Success<int>` and `Failure<string>` are accepted where
+  `Result<int, string>` is expected. Previously this failed PHPStan at level max.
+- `flatMap()` accepts a callback with a different error type; the resulting error type widens to `TError|TNewError`.
+- `onSuccess()` / `onFailure()` accept callbacks that return a value (the return value is ignored).
+- `isSuccess()` / `isFailure()` narrow the result to `Success` / `Failure` for PHPStan.
+- `Result` is declared `@phpstan-sealed Success|Failure`.
+- `zip()` and `collect()` infer value and error types from their arguments.
+- `recover()` declares `Success` as its return type.
+
 ---
 
 ## [2.2.0] - 2026-03-04
@@ -100,7 +129,8 @@
 ### Changed
 - Enhanced type safety with strict type hints and `readonly` classes
 
-[Unreleased]: https://github.com/arielespinoza07/result-pattern/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/arielespinoza07/result-pattern/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/arielespinoza07/result-pattern/compare/v2.2.0...v3.0.0
 [2.2.0]: https://github.com/arielespinoza07/result-pattern/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/arielespinoza07/result-pattern/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/arielespinoza07/result-pattern/compare/v1.0.2...v2.0.0

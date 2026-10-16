@@ -37,10 +37,15 @@ A modern, immutable implementation of the Result pattern for PHP 8.3+.
 
 ```
 src/
-├── Failure.php
+├── Result.php    # the type: abstract, sealed to Success|Failure, all instance methods
 ├── Success.php
-└── Result.php
+├── Failure.php
+├── Results.php   # named constructors and combinators
+└── Exceptions/
+    └── InvalidResultAccessException.php
 ```
+
+`Result` is the type you type-hint. `Results` is where results come from.
 
 ---
 
@@ -56,21 +61,25 @@ composer require arielespinoza07/result-pattern
 
 ```php
 use ArielEspinoza07\ResultPattern\Result;
+use ArielEspinoza07\ResultPattern\Results;
+
+/** @return Result<User, UserNotFound> */
+function findUser(int $id): Result
+{
+    return Results::fromNullable(User::find($id), new UserNotFound($id));
+}
 
 // Create results
-$ok  = Result::success(42);
-$err = Result::failure('something went wrong');
+$ok  = Results::success(42);
+$err = Results::failure('something went wrong');
 
 // Wrap a throwing operation
-$result = Result::attempt(fn () => riskyOperation());
-
-// Convert nullable to Result
-$result = Result::fromNullable($user, new UserNotFoundException());
+$result = Results::attempt(fn () => riskyOperation());
 
 // Transform and compose
-$value = Result::success(2)
+$value = Results::success(2)
     ->map(fn ($x) => $x * 10)
-    ->flatMap(fn ($x) => Result::success($x + 5))
+    ->flatMap(fn ($x) => Results::success($x + 5))
     ->getValueOr(0); // 25
 
 // Handle both branches
@@ -84,37 +93,34 @@ $output = $result->fold(
 
 ## API Reference
 
-### Static constructors
+### `Results`: constructors and combinators
 
 | Method | Description |
 |--------|-------------|
-| `Result::success($value)` | Wraps a value in a `Success` |
-| `Result::failure($error)` | Wraps an error in a `Failure` |
-| `Result::attempt(callable, array $only = [])` | Executes a callable; catches `Throwable` as `Failure`. Pass `$only` to catch only specific exception types. |
-| `Result::fromNullable($value, $error)` | `null` → `Failure($error)`, non-null → `Success($value)` |
-| `Result::zip(Result ...$results)` | All succeed → `Success([values])`, first failure wins (fail-fast) |
-| `Result::collect(array $results)` | Processes all results; returns `Failure([errors])` with every error collected (fail-all) |
+| `Results::success($value)` | Wraps a value in a `Success` |
+| `Results::failure($error)` | Wraps an error in a `Failure` |
+| `Results::attempt(callable, array $only = [])` | Executes a callable; catches `Throwable` as `Failure`. Pass `$only` to catch only specific exception types. |
+| `Results::fromNullable($value, $error)` | `null` → `Failure($error)`, non-null → `Success($value)` |
+| `Results::zip(Result ...$results)` | All succeed → `Success([values])`, first failure wins (fail-fast) |
+| `Results::collect(array $results)` | Processes all results; returns `Failure([errors])` with every error collected (fail-all). Keys are preserved, so errors stay matched to their input |
 
-### Instance methods
+### `Result`: instance methods
 
 | Method | Description |
 |--------|-------------|
-| `isSuccess()` | `true` if `Success` |
-| `isFailure()` | `true` if `Failure` |
-| `getValue()` | Returns value (throws on `Failure`) — prefer `getValueOr()` |
-| `getError()` | Returns error (throws on `Success`) — prefer `getErrorOr()` |
-| `getValueOr($default)` | Safe value access with fallback |
+| `isSuccess()` | `true` if `Success`; narrows the type for PHPStan |
+| `isFailure()` | `true` if `Failure`; narrows the type for PHPStan |
+| `getValue()` | Returns value (throws `InvalidResultAccessException` on `Failure`) — prefer `getValueOr()` |
+| `getError()` | Returns error (throws `InvalidResultAccessException` on `Success`) — prefer `getErrorOr()` |
+| `getValueOr($default)` | Safe value access with fallback (`getValueOr(null)` for nullable interop) |
 | `getErrorOr($default)` | Safe error access with fallback |
-| `toNullable()` | `Success($v)` → `$v`, `Failure` → `null` |
 | `map(callable)` | Transform the value; no-op on `Failure` |
 | `mapError(callable)` | Transform the error; no-op on `Success` |
-| `flatMap(callable)` | Chain a `Result`-returning callable on `Success` |
-| `flatMapError(callable)` | Chain a `Result`-returning callable on `Failure` |
+| `flatMap(callable)` | Chain a `Result`-returning callable on `Success`; the error type widens |
 | `recover(callable)` | Convert `Failure` → `Success` via fallback value |
 | `recoverWith(callable)` | Convert `Failure` → `Result` (recovery can itself fail) |
-| `tap(callable)` | Run a side-effect on `Success` without modifying the result |
-| `onSuccess(callable)` | Run a side-effect on `Success` |
-| `onFailure(callable)` | Run a side-effect on `Failure` |
+| `onSuccess(callable)` | Run a side effect on `Success`; returns the same result |
+| `onFailure(callable)` | Run a side effect on `Failure`; returns the same result |
 | `fold(onSuccess, onFailure)` | Collapse both branches into a single value |
 
 ---
@@ -122,13 +128,12 @@ $output = $result->fold(
 ## Documentation
 
 - [Basic Success and Failure Examples](docs/basic-examples.md)
-- [attempt() / try() Method Examples](docs/try-method-examples.md)
+- [attempt() Method Examples](docs/attempt-method-examples.md)
 - [zip() and collect() Examples](docs/zip-collect-examples.md)
 - [fromNullable() Examples](docs/from-nullable-examples.md)
 - [onSuccess and onFailure Examples](docs/on-success-failure-examples.md)
-- [tap() and toNullable() Examples](docs/tap-to-nullable-examples.md)
 - [Map Method Examples](docs/map-method-examples.md)
-- [mapError() and flatMapError() Examples](docs/map-error-examples.md)
+- [mapError() Examples](docs/map-error-examples.md)
 - [FlatMap Method Examples](docs/flat-map-method-examples.md)
 - [Fold Method Examples](docs/fold-method-examples.md)
 - [recover() and recoverWith() Examples](docs/recover-examples.md)

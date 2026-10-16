@@ -2,7 +2,7 @@
 
 <p>
   <a href="https://github.com/ArielEspinoza07/result-pattern/actions">
-    <img src="https://github.com/ArielEspinoza07/result-pattern/actions/workflows/tests.yml/badge.svg"  alt="Build Status">
+    <img src="https://github.com/ArielEspinoza07/result-pattern/actions/workflows/ci.yml/badge.svg"  alt="Build Status">
   </a>
   <a href="https://packagist.org/packages/arielespinoza07/result-pattern">
     <img src="https://img.shields.io/packagist/dt/arielespinoza07/result-pattern.svg?style=flat-square" alt="Total Downloads">

@@ -34,7 +34,7 @@
         "lint:fix": "pint",
         "analyse": "phpstan analyse",
         "test": "pest",
-        "test:coverage": "pest --coverage",
+        "test:coverage": "pest --type-coverage --min=100",
         "check": [
             "@lint",
             "@analyse",

@@ -2,12 +2,12 @@
 
 ## Supported Versions
 
-Only the latest `v2.x` release receives security patches.
+Only the latest `v3.x` release receives security patches.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 2.x     | :white_check_mark: |
-| < 2.0   | :x:                |
+| 3.x     | :white_check_mark: |
+| < 3.0   | :x:                |
 
 ## Reporting a Vulnerability
 

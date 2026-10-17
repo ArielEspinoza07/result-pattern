@@ -164,7 +164,7 @@ composer lint        # check code style (Pint)
 composer lint:fix    # fix code style
 composer analyse     # static analysis (PHPStan level max)
 composer test        # run tests (Pest PHP)
-composer test:coverage # run tests with coverage report
+composer test:coverage # type coverage (must stay at 100%)
 ```
 
 ---

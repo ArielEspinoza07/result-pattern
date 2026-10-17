@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Docs
+- `SECURITY.md`: `3.x` is now the only supported version.
+- README and CONTRIBUTING describe `composer test:coverage` as the type coverage check.
+
+---
+
 ## [3.0.0] - 2026-10-16
 
 ### Breaking

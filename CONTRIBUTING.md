@@ -23,7 +23,7 @@ composer install
 | `composer lint:fix`       | Auto-fix code style issues                     |
 | `composer analyse`        | Run PHPStan static analysis (level max)        |
 | `composer test`           | Run the Pest test suite                        |
-| `composer test:coverage`  | Run tests with code-coverage report            |
+| `composer test:coverage`  | Check type coverage (must stay at 100%)        |
 | `composer check`          | Run lint, analyse, and test in sequence        |
 
 Run `composer check` before opening a pull request to ensure all checks pass locally.

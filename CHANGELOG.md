@@ -30,6 +30,35 @@
 - `Result` is declared `@phpstan-sealed Success|Failure`.
 - `zip()` and `collect()` infer value and error types from their arguments.
 - `recover()` declares `Success` as its return type.
+- `Failure::getValue()` and `Success::getError()` declare a `never` return type, so PHPStan treats
+  code after them as unreachable.
+- Exception messages name the type of the value or error that was present
+  (`Cannot get the value of a Failure (error type: PDOException).`), never its contents.
+
+### Added
+- `Results` final class holding the named constructors (`success`, `failure`, `attempt`, `fromNullable`)
+  and combinators (`zip`, `collect`).
+- `Exceptions\InvalidResultAccessException` with named constructors `valueOfFailure()` and `errorOfSuccess()`.
+
+### Docs
+- README: new project structure, Quick Start with a typed `Result` return, and API tables split into
+  `Results` (constructors and combinators) and `Result` (instance methods).
+- `getValueOr()` docblock notes that the default is evaluated eagerly and points to `recover()` for costly defaults.
+- Renamed `docs/try-method-examples.md` to `docs/attempt-method-examples.md` and removed the `try()` section.
+- Removed `docs/tap-to-nullable-examples.md`; removed the `flatMapError()` section from `docs/map-error-examples.md`.
+- `docs/error-handling-examples.md` documents `InvalidResultAccessException` and previous-exception chaining.
+- `docs/zip-collect-examples.md` shows key-preserving `collect()` with per-field validation.
+- All examples use `Results::` for construction.
+
+### Development
+- Removed every `@phpstan-ignore` from `src/` and `tests/`; enabled `reportUnmatchedIgnoredErrors`
+  and dropped the obsolete PHPUnit ignore pattern.
+- Added `tests/Types/ResultTypes.php`: `assertType` checks for the inferred types of the public API.
+- `composer test:coverage` runs type coverage (`pest --type-coverage --min=100`).
+- Replaced the `Formats` and `Tests` workflows with a single `CI` workflow: on every pull request and on pushes
+  to `main`, one quality job (composer validate, Pint, PHPStan, type coverage) on PHP 8.3, plus tests on
+  PHP 8.3/8.4/8.5 with lowest and stable dependencies on Ubuntu.
+- Removed the unused changelog and release workflows and their scripts.
 
 ---
 
